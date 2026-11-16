@@ -35,10 +35,10 @@ jobs:
 
       - name: Build (static export for GitHub Pages project site)
         env:
-          # For project pages test URL: https://adityatrivedi7.github.io/gear-go/
+          # For project pages test URL: https://xagatoferaro.github.io/gear-go/
           # Remove/override these when switching to custom domain root.
           NEXT_PUBLIC_BASE_PATH: /gear-go
-          NEXT_PUBLIC_SITE_URL: https://adityatrivedi7.github.io/gear-go
+          NEXT_PUBLIC_SITE_URL: https://xagatoferaro.github.io/gear-go
         run: npm run build
 
       - name: Upload artifact

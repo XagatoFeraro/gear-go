@@ -31,7 +31,7 @@ Static files are generated in `out/` (for export mode).
 The included workflow (`.github/workflows/deploy-pages.yml`) builds with:
 
 - `NEXT_PUBLIC_BASE_PATH=/gear-go`
-- `NEXT_PUBLIC_SITE_URL=https://adityatrivedi7.github.io/gear-go`
+- `NEXT_PUBLIC_SITE_URL=https://xagatoferaro.github.io/gear-go`
 
 Enable **Settings → Pages → Source: GitHub Actions** in the repo, then push to `main` (or run the workflow manually).
 
