@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: `%s | ${business.name}`,
   },
   description:
-    "Trusted multi-brand car garage in Aya Nagar, New Delhi. Car servicing, mechanic repairs, AC service, car wash, denting & painting, brakes, battery, tyres and diagnostics. Call or WhatsApp for a quick response.",
+    "Multi-brand car garage in Aya Nagar, New Delhi. Car servicing, mechanic repairs, AC service, car wash, denting & painting, brakes, battery, tyres and diagnostics. Call or WhatsApp for a quick response.",
   keywords: [
     "car service Aya Nagar",
     "mechanic near me",
@@ -49,9 +49,18 @@ export const metadata: Metadata = {
     description:
       "Multi-brand car service, repairs, car wash, denting & painting in Aya Nagar, New Delhi. Call or WhatsApp for quick help.",
     url: "/",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${business.name} — car service in Aya Nagar, New Delhi`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   category: "automotive",

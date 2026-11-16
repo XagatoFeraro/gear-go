@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
-const base = (process.env.NEXT_PUBLIC_SITE_URL || "https://{{DOMAIN}}").replace(/\/$/, "");
-
 export default function robots(): MetadataRoute.Robots {
+  const base = getSiteUrl();
   return {
     rules: {
       userAgent: "*",

@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import CtaBand from "@/components/CtaBand";
+import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import { business } from "@/data/business";
-import { getBreadcrumbJsonLd, getFaqJsonLd } from "@/lib/seo";
+import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
+import { business, getWhatsAppHref, isExternalUrl } from "@/data/business";
+import { getBreadcrumbJsonLd, getFaqJsonLd, pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Car Service FAQs",
   description: `Answers about car servicing, mechanic repairs, pricing, booking, parts, warranty and visiting ${business.name} in Aya Nagar, New Delhi.`,
-  alternates: { canonical: "/faq/" },
-};
+  path: "/faq/",
+});
 
 const faqs = [
   { q: "How do I request a car service or mechanic near Aya Nagar?", a: "WhatsApp us, call, or submit the enquiry form. We’ll confirm availability and the next step directly. This website does not take payments or confirm bookings automatically." },
@@ -23,33 +27,101 @@ const faqs = [
   { q: "Where is the garage and what are your hours?", a: `${business.address.full}. Hours: ${business.hours.display.join(" · ")}.` },
 ];
 
+const whatsappMessage = "Hi Gear Go Automobiles, I have a question about car service.";
+
 export default function FaqPage() {
+  const whatsapp = getWhatsAppHref(whatsappMessage);
+
   return (
     <>
-      <JsonLd data={[getBreadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "FAQ", path: "/faq/" }]), getFaqJsonLd(faqs)]} />
+      <JsonLd
+        data={[
+          getBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "FAQ", path: "/faq/" },
+          ]),
+          getFaqJsonLd(faqs),
+        ]}
+      />
+
+      <PageHero
+        compact
+        eyebrow="FAQ"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "FAQ" }]}
+        title={
+          <>
+            Answers before <em>you visit.</em>
+          </>
+        }
+        lede={`Clear answers about servicing, repairs, pricing, parts, warranty and visiting ${business.name} in Aya Nagar, New Delhi.`}
+      />
+
       <section className="section">
-        <div className="container" style={{ maxWidth: 900 }}>
-          <p className="breadcrumb"><Link href="/">Home</Link> / FAQ</p>
-          <div className="section-head">
-            <span className="eyebrow">FAQ</span>
-            <h1>Frequently asked questions</h1>
-            <p className="lead">Clear answers about car servicing, repairs, pricing, parts, warranty and visiting {business.name} in Aya Nagar, New Delhi.</p>
-          </div>
-          <div className="faq">
-            {faqs.map((item) => (
-              <details key={item.q}><summary>{item.q}</summary><p>{item.a}</p></details>
-            ))}
-          </div>
-          <div className="callout" style={{ marginTop: "2rem" }}>
-            <h2>Still have a question?</h2>
-            <p className="muted">Send your car details and concern — we’ll guide you on the next step.</p>
-            <div className="btn-row">
-              <Link className="btn btn-primary" href="/contact">Contact / WhatsApp</Link>
-              <Link className="btn btn-secondary" href="/book">Request service</Link>
+        <div className="container faq-page-grid">
+          <div>
+            <SectionHead
+              eyebrow="Common questions"
+              title="Car service, explained"
+              lede="If your question isn’t here, send it on WhatsApp — we’ll answer directly."
+            />
+            <div className="faq-list">
+              {faqs.map((item) => (
+                <details className="faq-item" key={item.q}>
+                  <summary>
+                    {item.q}
+                    <Icon name="plus" size="sm" />
+                  </summary>
+                  <p className="faq-a">{item.a}</p>
+                </details>
+              ))}
             </div>
           </div>
+
+          <aside className="faq-aside">
+            <span className="badge badge-lime no-dot">Still curious?</span>
+            <h2>Ask the garage directly</h2>
+            <p>
+              Share your car make/model and concern. We’ll tell you what we can help with and what
+              happens next.
+            </p>
+            <a
+              className="btn btn-lime btn-block"
+              href={whatsapp}
+              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            >
+              <Icon name="whatsapp" size="sm" /> WhatsApp us
+            </a>
+            <Link className="btn btn-outline btn-block mt-2" href="/book/">
+              Send an enquiry form
+            </Link>
+            <div className="faq-aside-note">
+              <Icon name="clock" size="sm" />
+              <span>{business.hours.display.join(" · ")}</span>
+            </div>
+          </aside>
         </div>
       </section>
+
+      <CtaBand
+        title="Prefer a conversation?"
+        text="Call or WhatsApp with your car details. No payment is taken online and no booking is confirmed automatically."
+        actions={
+          <>
+            <a
+              className="btn btn-dark"
+              href={whatsapp}
+              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            >
+              WhatsApp us <Icon name="whatsapp" size="sm" />
+            </a>
+            <Link className="btn btn-outline" href="/contact/">
+              Contact &amp; directions
+            </Link>
+          </>
+        }
+      />
     </>
   );
 }

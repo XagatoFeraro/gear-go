@@ -192,15 +192,69 @@ export const services: Service[] = [
 ];
 
 export const serviceAreas = [
-  { name: "Aya Nagar", slug: "aya-nagar" },
-  { name: "Chhatarpur", slug: "chhatarpur" },
-  { name: "Mehrauli", slug: "mehrauli" },
-  { name: "Saket", slug: "saket" },
-  { name: "Malviya Nagar", slug: "malviya-nagar" },
-  { name: "Vasant Kunj", slug: "vasant-kunj" },
-  { name: "Gurugram", slug: "gurugram" },
-  { name: "Faridabad", slug: "faridabad" },
-  { name: "South Delhi", slug: "south-delhi" },
+  {
+    name: "Aya Nagar",
+    slug: "aya-nagar",
+    context:
+      "Our own neighbourhood. The workshop is in Phase 4, H Block, behind Fitness Club Gym, so Aya Nagar residents are usually close to us for a routine service or a quick check.",
+    focus: ["periodic-car-service", "brake-suspension", "ac-service-repair"],
+  },
+  {
+    name: "Chhatarpur",
+    slug: "chhatarpur",
+    context:
+      "Chhatarpur is one of the nearest localities to the workshop, making it a practical visit for periodic servicing, cleaning or a specific concern you want checked.",
+    focus: ["periodic-car-service", "car-spa-cleaning", "battery-service"],
+  },
+  {
+    name: "Mehrauli",
+    slug: "mehrauli",
+    context:
+      "Mehrauli car owners often visit us for AC checks, brake work and general mechanical concerns. Share the symptom first so we can confirm what the visit should cover.",
+    focus: ["ac-service-repair", "brake-suspension", "mechanical-repairs"],
+  },
+  {
+    name: "Saket",
+    slug: "saket",
+    context:
+      "From Saket, the workshop is a straightforward visit for scheduled maintenance, detailing or bodywork. Call ahead so we can confirm availability and timing.",
+    focus: ["periodic-car-service", "detailing-services", "denting-painting"],
+  },
+  {
+    name: "Malviya Nagar",
+    slug: "malviya-nagar",
+    context:
+      "Malviya Nagar owners use the workshop for AC service, tyre checks and electrical faults. A quick WhatsApp with your car details helps us prepare for the visit.",
+    focus: ["ac-service-repair", "tyres-wheel-care", "electrical-repairs"],
+  },
+  {
+    name: "Vasant Kunj",
+    slug: "vasant-kunj",
+    context:
+      "Vasant Kunj customers often plan detailing, denting or periodic service with us. Confirm the scope and timing before travelling so the visit is useful.",
+    focus: ["detailing-services", "denting-painting", "periodic-car-service"],
+  },
+  {
+    name: "Gurugram",
+    slug: "gurugram",
+    context:
+      "Gurugram customers often combine a workshop visit with other errands. Message us with your concern and preferred day so we can confirm whether the trip makes sense.",
+    focus: ["periodic-car-service", "engine-diagnostics", "ac-service-repair"],
+  },
+  {
+    name: "Faridabad",
+    slug: "faridabad",
+    context:
+      "Faridabad is further out, so it helps to share photos or a short video of the issue on WhatsApp before making the trip. We’ll tell you what we can assess.",
+    focus: ["denting-painting", "ac-service-repair", "car-inspection"],
+  },
+  {
+    name: "South Delhi",
+    slug: "south-delhi",
+    context:
+      "If you’re elsewhere in South Delhi, send your locality and car details. We’ll confirm whether a visit to Aya Nagar makes sense for the work you need.",
+    focus: ["car-inspection", "brake-suspension", "car-spa-cleaning"],
+  },
 ];
 
 export const business = {
@@ -262,23 +316,22 @@ export const business = {
   brandsServicedNote: "All car brands and models serviced. Call or WhatsApp to confirm your vehicle.",
   policies: {
     parts:
-      "We use original or equivalent-quality parts. The proposed part and price are shared for your approval before fitment.",
+      "Parts options are explained and priced before fitment. Any part proposed is shared for your approval first.",
     warranty:
-      "Workmanship warranty available. Ask the garage for current terms, coverage and exclusions.",
+      "Ask about current warranty terms, coverage and exclusions before work begins.",
     pickupDropoff:
-      "Pickup and drop-off available. Call or WhatsApp to confirm coverage, timing and charges for your location.",
+      "Pickup and drop-off can be arranged. Call or WhatsApp to confirm coverage, timing and charges for your location.",
     towing:
-      "Towing available. Call or WhatsApp to confirm coverage, timing and charges.",
+      "Towing can be arranged. Call or WhatsApp to confirm coverage, timing and charges.",
     insurance:
-      "Insurance claim coordination available. Claim approval and coverage decisions remain with the insurer.",
+      "Insurance claim coordination can be discussed. Claim approval and coverage decisions remain with the insurer.",
     pricing: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
   },
   trustHighlights: [
     "All car brands & models",
-    "Original or equivalent parts, approved before fitment",
-    "Pickup, drop-off & towing available (confirm details)",
-    "Insurance coordination available",
-    "Workmanship warranty available (ask for terms)",
+    "Parts options approved before fitment",
+    "Ask about pickup, drop-off, towing and insurance coordination",
+    "Ask about current warranty terms",
   ],
   form: {
     // Confirm operator destination/provider (email + Formspree/Web3Forms dashboard, or Google Sheet, etc.)
@@ -292,9 +345,57 @@ export const business = {
 
 export type Business = typeof business;
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+export function withBasePath(path: string) {
+  if (!path.startsWith("/")) return path;
+  if (!basePath || basePath === "/") return path;
+  if (path === basePath || path.startsWith(`${basePath}/`)) return path;
+  return `${basePath}${path}`;
+}
+
+export function isPlaceholder(value: string | undefined | null) {
+  return !value || value.includes("{{");
+}
+
+export function isExternalUrl(url: string) {
+  return /^https?:\/\//.test(url);
+}
+
+export function getPhoneHref() {
+  return isPlaceholder(business.phone.e164) ? withBasePath("/contact/") : business.phone.telHref;
+}
+
+export function getPhoneLabel() {
+  return isPlaceholder(business.phone.display) ? "Contact us" : business.phone.display;
+}
+
 export function getWhatsAppUrl(message: string) {
   const base = business.whatsapp.url;
-  const text = encodeURIComponent(message);
-  if (base.includes("{{")) return "#";
-  return `${base}?text=${text}`;
+  if (isPlaceholder(base)) return withBasePath("/contact/");
+  return `${base}?text=${encodeURIComponent(message)}`;
+}
+
+export function getWhatsAppHref(message?: string) {
+  return message
+    ? getWhatsAppUrl(message)
+    : isPlaceholder(business.whatsapp.url)
+      ? withBasePath("/contact/")
+      : business.whatsapp.url;
+}
+
+export function getEmailLabel() {
+  return isPlaceholder(business.email) ? "Send an enquiry" : business.email;
+}
+
+export function getEmailHref() {
+  return isPlaceholder(business.email) ? withBasePath("/contact/") : `mailto:${business.email}`;
+}
+
+export function getDirectionsHref() {
+  return business.maps.directionsUrl;
+}
+
+export function getMapEmbedUrl() {
+  return isPlaceholder(business.maps.embedUrl) ? null : business.maps.embedUrl;
 }

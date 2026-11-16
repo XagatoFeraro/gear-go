@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { business, services } from "@/data/business";
+import { business, getWhatsAppHref, services } from "@/data/business";
 
 type Props = {
   initialService?: string;
@@ -31,8 +31,7 @@ export default function EnquiryForm({ initialService, compact }: Props) {
 
   const waFallback = useMemo(() => {
     const msg = `Hi ${business.name}, I would like to request a service.\nName: ${form.name}\nPhone: ${form.phone}\nCar: ${form.car}\nRegistration: ${form.registration || "-"}\nService needed: ${form.service || "-"}\nPreferred date: ${form.preferredDate || "-"}\nConcern: ${form.concern}`;
-    if (business.whatsapp.url.includes("{{")) return "/contact";
-    return `${business.whatsapp.url}?text=${encodeURIComponent(msg)}`;
+    return getWhatsAppHref(msg);
   }, [form]);
 
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
@@ -54,8 +53,12 @@ export default function EnquiryForm({ initialService, compact }: Props) {
 
     const endpoint = business.form.endpoint;
     if (!isConfiguredEndpoint(endpoint)) {
-      // Useful fallback: hand off filled details to WhatsApp so operator receives them
-      window.open(waFallback, "_blank", "noopener,noreferrer");
+      // Useful fallback: hand off filled details to WhatsApp so the garage receives them.
+      if (/^https?:\/\//.test(waFallback)) {
+        window.open(waFallback, "_blank", "noopener,noreferrer");
+      } else {
+        window.location.href = waFallback;
+      }
       setStatus("success");
       return;
     }
@@ -111,7 +114,7 @@ export default function EnquiryForm({ initialService, compact }: Props) {
       <div className="visually-hidden" aria-hidden="true">
         <label>Company<input name="company" tabIndex={-1} autoComplete="off" value={form.company} onChange={(e) => update("company", e.target.value)} /></label>
       </div>
-      <div className="grid grid-2">
+      <div className="form-row">
         <div className="form-field">
           <label htmlFor="name">Name *</label>
           <input id="name" name="name" autoComplete="name" required value={form.name} onChange={(e) => update("name", e.target.value)} />
@@ -121,9 +124,9 @@ export default function EnquiryForm({ initialService, compact }: Props) {
           <input id="phone" name="phone" autoComplete="tel" inputMode="tel" required value={form.phone} onChange={(e) => update("phone", e.target.value)} />
         </div>
       </div>
-      <div className="grid grid-2">
+      <div className="form-row">
         <div className="form-field">
-          <label htmlFor="car">Car make & model *</label>
+          <label htmlFor="car">Car make &amp; model *</label>
           <input id="car" name="car" required value={form.car} onChange={(e) => update("car", e.target.value)} placeholder="e.g. Maruti Swift, Hyundai Creta" />
         </div>
         <div className="form-field">
@@ -131,7 +134,7 @@ export default function EnquiryForm({ initialService, compact }: Props) {
           <input id="registration" name="registration" value={form.registration} onChange={(e) => update("registration", e.target.value)} />
         </div>
       </div>
-      <div className="grid grid-2">
+      <div className="form-row">
         <div className="form-field">
           <label htmlFor="service">Service needed</label>
           <select id="service" name="service" value={form.service} onChange={(e) => update("service", e.target.value)}>
@@ -151,8 +154,8 @@ export default function EnquiryForm({ initialService, compact }: Props) {
         <label htmlFor="concern">Concern / notes *</label>
         <textarea id="concern" name="concern" required value={form.concern} onChange={(e) => update("concern", e.target.value)} placeholder="Describe the issue, symptoms, or what you need help with" />
       </div>
-      <div className="form-field">
-        <label style={{ fontWeight: 500 }}>
+      <div className="form-field checkbox-field">
+        <label>
           <input type="checkbox" checked={form.consent} onChange={(e) => update("consent", e.target.checked)} required />{" "}
           I agree to be contacted by {business.name} about this enquiry. *
         </label>
@@ -160,16 +163,22 @@ export default function EnquiryForm({ initialService, compact }: Props) {
       {status === "error" && error && <div className="form-error" role="alert">{error}</div>}
       {status === "idle" && error && <div className="form-error" role="alert">{error}</div>}
       <div className="btn-row">
-        <button type="submit" className="btn btn-primary" disabled={status === "submitting"}>
+        <button type="submit" className="btn btn-lime" disabled={status === "submitting"}>
           {status === "submitting" ? "Sending..." : "Send enquiry"}
         </button>
-        <a className="btn btn-secondary" href={waFallback} target="_blank" rel="noopener noreferrer">
+        <a
+          className="btn btn-outline"
+          href={waFallback}
+          target={/^https?:\/\//.test(waFallback) ? "_blank" : undefined}
+          rel={/^https?:\/\//.test(waFallback) ? "noopener noreferrer" : undefined}
+        >
           Send details on WhatsApp instead
         </a>
       </div>
       {!isConfiguredEndpoint(business.form.endpoint) && (
         <p className="form-note">
-          Operator form delivery endpoint is not configured yet ({business.form.provider || "provider TBD"}). Submitting will open WhatsApp with your filled details so the garage can receive them. Call/WhatsApp anytime for quickest response.
+          The enquiry form opens WhatsApp with your filled details so the garage receives them
+          quickly. You can also call or WhatsApp anytime.
         </p>
       )}
     </form>

@@ -1,30 +1,30 @@
 import type { MetadataRoute } from "next";
 import { serviceAreas, services } from "@/data/business";
+import { getSiteUrl } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
-const base = (process.env.NEXT_PUBLIC_SITE_URL || "https://{{DOMAIN}}").replace(/\/$/, "");
-
 export default function sitemap(): MetadataRoute.Sitemap {
+  const base = getSiteUrl();
   const routes = [
-    "",
-    "/services",
-    "/service-areas",
-    "/about",
-    "/why-gear-go",
-    "/contact",
-    "/book",
-    "/faq",
-    "/privacy",
-    "/terms",
+    "/",
+    "/services/",
+    "/service-areas/",
+    "/about/",
+    "/why-gear-go/",
+    "/contact/",
+    "/book/",
+    "/faq/",
+    "/privacy/",
+    "/terms/",
   ];
   const now = new Date();
   return [
     ...routes.map((route) => ({
-      url: `${base}${route || "/"}`,
+      url: `${base}${route}`,
       lastModified: now,
-      changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
-      priority: route === "" ? 1 : 0.7,
+      changeFrequency: route === "/" ? ("weekly" as const) : ("monthly" as const),
+      priority: route === "/" ? 1 : 0.7,
     })),
     ...services.map((s) => ({
       url: `${base}/services/${s.slug}/`,

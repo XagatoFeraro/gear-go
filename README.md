@@ -42,14 +42,17 @@ When connecting the purchased domain:
 1. Set `NEXT_PUBLIC_SITE_URL=https://<your-domain>` and remove `NEXT_PUBLIC_BASE_PATH` (or set empty) in the build environment.
 2. Add `public/CNAME` with the custom domain if required.
 3. Configure DNS and GitHub Pages custom domain/HTTPS.
-4. Replace placeholders in `src/data/business.ts`, `public/llms.txt`, and content; verify canonicals/sitemap/robots/links.
+4. Replace placeholders in `src/data/business.ts` and content; verify canonicals/sitemap/robots/links.
+5. Replace `public/og-image.png` (1200×630 social card) with a final branded/photo version if available.
 
 ## Key files
 
 - `src/data/business.ts` — single source of truth for business facts, services, areas, CTAs, and form config (use placeholders until confirmed; do not invent facts)
 - `src/app/` — routes/pages (App Router)
-- `src/components/` — UI components (Header, Footer, MobileCtaBar, EnquiryForm)
-- `public/llms.txt`, `src/app/sitemap.ts`, `src/app/robots.ts` — SEO/AISEO
+- `src/components/` — UI components (Header, Footer, MobileCtaBar, EnquiryForm, illustrations)
+- `src/app/llms.txt/route.ts`, `src/app/sitemap.ts`, `src/app/robots.ts` — generated SEO/AISEO files
+- `src/lib/seo.ts` — canonical/Open Graph helpers and JSON-LD builders
+- `public/og-image.png` — social sharing card (generated from brand tokens, no stock photos)
 
 ## Contact flow (Phase 1)
 

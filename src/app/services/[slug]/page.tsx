@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import CtaBand from "@/components/CtaBand";
+import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import { business, services, serviceAreas } from "@/data/business";
-import { getBreadcrumbJsonLd, getFaqJsonLd, getServiceJsonLd } from "@/lib/seo";
+import PageHero from "@/components/PageHero";
+import ServiceCard from "@/components/ServiceCard";
+import { getServiceIcon } from "@/lib/serviceIcons";
+import {
+  business,
+  getPhoneHref,
+  getPhoneLabel,
+  getWhatsAppHref,
+  isExternalUrl,
+  services,
+  serviceAreas,
+} from "@/data/business";
+import { getBreadcrumbJsonLd, getFaqJsonLd, getServiceJsonLd, pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -39,16 +52,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = services.find((s) => s.slug === slug);
   if (!service) return {};
   const intent = intentKeywords[slug] ? ` ${intentKeywords[slug]}.` : "";
-  return {
+  return pageMetadata({
     title: `${service.name} in Aya Nagar, New Delhi`,
     description: `${service.name} at ${business.name}, Aya Nagar, New Delhi. ${service.shortDescription} Call or WhatsApp to confirm availability.${intent}`,
-    alternates: { canonical: `/services/${slug}/` },
-    openGraph: {
-      title: `${service.name} in Aya Nagar, New Delhi | ${business.name}`,
-      description: `${service.shortDescription} Price confirmed after inspection. Call or WhatsApp.`,
-      url: `/services/${slug}/`,
-    },
-  };
+    path: `/services/${slug}/`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
@@ -56,127 +64,283 @@ export default async function ServiceDetailPage({ params }: Props) {
   const service = services.find((s) => s.slug === slug);
   if (!service) notFound();
 
-  const waBase = business.whatsapp.url.includes("{{") ? "/contact" : business.whatsapp.url;
-  const wa = waBase === "/contact" ? "/contact" : `${waBase}?text=${encodeURIComponent(`Hi Gear Go Automobiles, I need ${service.name} for my car (____). My location is ____. Concern: ____`)}`;
+  const whatsapp = getWhatsAppHref(
+    `Hi Gear Go Automobiles, I need ${service.name} for my car (____). My location is ____. Concern: ____`,
+  );
 
-  const related = services.filter((s) => s.group === service.group && s.slug !== service.slug).slice(0, 3);
+  const related = services
+    .filter((s) => s.group === service.group && s.slug !== service.slug)
+    .slice(0, 3);
+  const fallbackRelated = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+  const relatedServices = related.length > 0 ? related : fallbackRelated;
+
   const faqs = [
-    { q: `How do I enquire about ${service.name.toLowerCase()}?`, a: `WhatsApp or call ${business.name} with your car make/model and concern. We’ll confirm availability and the next step. You can also send an enquiry form.` },
-    { q: `What is the price for ${service.name.toLowerCase()}?`, a: service.priceNote },
-    { q: "Do you explain and get approval before work?", a: "Yes. We inspect, explain findings in plain language, and share the scope and estimate. Work proceeds only after your approval." },
-    { q: "Which areas do you serve?", a: `We are in Aya Nagar, New Delhi and serve nearby areas including ${business.serviceAreas.slice(0, 6).map(a => a.name).join(", ")} and more. Call or WhatsApp to confirm.` },
+    {
+      q: `How do I enquire about ${service.name.toLowerCase()}?`,
+      a: `WhatsApp or call ${business.name} with your car make/model and concern. We’ll confirm availability and the next step. You can also send an enquiry form.`,
+    },
+    {
+      q: `What is the price for ${service.name.toLowerCase()}?`,
+      a: service.priceNote,
+    },
+    {
+      q: "Do you explain and get approval before work?",
+      a: "Yes. We inspect, explain findings in plain language, and share the scope and estimate. Work proceeds only after your approval.",
+    },
+    {
+      q: "Which areas do you serve?",
+      a: `We are in Aya Nagar, New Delhi and serve nearby areas including ${business.serviceAreas
+        .slice(0, 6)
+        .map((a) => a.name)
+        .join(", ")} and more. Call or WhatsApp to confirm.`,
+    },
   ];
 
   return (
     <>
-      <JsonLd data={[
-        getBreadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Services", path: "/services/" },
-          { name: service.name, path: `/services/${service.slug}/` },
-        ]),
-        getServiceJsonLd(service),
-        getFaqJsonLd(faqs),
-      ]} />
+      <JsonLd
+        data={[
+          getBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Services", path: "/services/" },
+            { name: service.name, path: `/services/${service.slug}/` },
+          ]),
+          getServiceJsonLd(service),
+          getFaqJsonLd(faqs),
+        ]}
+      />
+
+      <PageHero
+        eyebrow={`${service.group} · Aya Nagar, New Delhi`}
+        breadcrumb={[
+          { name: "Home", href: "/" },
+          { name: "Services", href: "/services/" },
+          { name: service.name },
+        ]}
+        title={
+          <>
+            {service.name} in <em>Aya Nagar, New Delhi.</em>
+          </>
+        }
+        lede={
+          <>
+            {service.shortDescription} We inspect first, explain the findings and options, and proceed
+            only after your approval — serving Aya Nagar and nearby South Delhi/NCR areas.
+          </>
+        }
+        actions={
+          <>
+            <a
+              className="btn btn-lime"
+              href={whatsapp}
+              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            >
+              WhatsApp about this <Icon name="whatsapp" size="sm" />
+            </a>
+            <a className="btn btn-outline-light" href={getPhoneHref()}>
+              <Icon name="phone" size="sm" />
+              {getPhoneLabel()}
+            </a>
+            <Link className="btn btn-outline-light" href={`/book/?service=${encodeURIComponent(service.name)}`}>
+              Enquiry form
+            </Link>
+          </>
+        }
+      />
 
       <section className="section">
-        <div className="container" style={{ maxWidth: 1000 }}>
-          <p className="breadcrumb"><Link href="/">Home</Link> / <Link href="/services/">Services</Link> / {service.name}</p>
-          <span className="eyebrow">{service.group} · Aya Nagar, New Delhi</span>
-          <h1>{service.name} in Aya Nagar, New Delhi</h1>
-          <p className="lead">
-            {service.shortDescription} At {business.name}, we follow an inspection-first approach: we assess the issue,
-            explain options clearly, and proceed only after your approval. Serving Aya Nagar and nearby South Delhi/NCR areas.
-          </p>
-          <div className="btn-row" style={{ marginTop: "1.25rem" }}>
-            <a className="btn btn-primary" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp for {service.name}</a>
-            <a className="btn btn-secondary" href={business.phone.telHref}>Call {business.phone.display}</a>
-            <Link className="btn btn-secondary" href={`/book?service=${encodeURIComponent(service.name)}`}>Request via form</Link>
-          </div>
-
-          <div className="grid grid-2" style={{ marginTop: "2rem", alignItems: "start" }}>
-            <div className="card">
-              <h2>Signs you may need this</h2>
-              <ul className="list-check">
-                {service.signs.map((s) => <li key={s}>{s}</li>)}
-                <li>Not sure? Share your concern on WhatsApp for guidance.</li>
-              </ul>
-            </div>
-            <div className="card">
-              <h2>What’s included</h2>
-              <ul className="list-check">
-                {service.included.map((i) => <li key={i}>{i}</li>)}
-              </ul>
-              <p className="form-note" style={{ marginTop: "0.75rem" }}><strong>Pricing:</strong> {service.priceNote}</p>
-            </div>
-          </div>
-
-          <div className="card" style={{ marginTop: "1rem" }}>
-            <h2>How it works</h2>
-            <div className="steps" style={{ marginTop: "0.75rem" }}>
-              {[
-                ["1", "Contact & share concern", "Tell us your car details and what you’re experiencing."],
-                ["2", "Inspect & diagnose", "We check the vehicle/service need and identify the scope."],
-                ["3", "Estimate & approval", "We explain findings and share estimate. You approve before work."],
-                ["4", "Service & handover", "Agreed work is completed with clear communication."],
-              ].map(([n, t, d]) => (
-                <div className="step" key={t}><div className="step-num">{n}</div><h3>{t}</h3><p>{d}</p></div>
-              ))}
-            </div>
-          </div>
-
-          <div className="callout" style={{ marginTop: "1rem" }}>
-            <h2 style={{ fontSize: "1.2rem" }}>Good to know</h2>
-            <ul className="list-check">
-              <li>{business.brandsServicedNote}</li>
-              <li>{business.policies.parts}</li>
-              <li>{business.policies.pricing}</li>
-            </ul>
-          </div>
-
-          <div style={{ marginTop: "2rem" }}>
-            <h2>Frequently asked questions</h2>
-            <div className="faq" style={{ marginTop: "0.75rem" }}>
-              {faqs.map((f) => <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>)}
-            </div>
-          </div>
-
-          {related.length > 0 && (
-            <div style={{ marginTop: "2rem" }}>
-              <h2>Related services</h2>
-              <div className="grid grid-3" style={{ marginTop: "0.75rem" }}>
-                {related.map((r) => (
-                  <Link href={`/services/${r.slug}/`} className="card card-hover service-tile" key={r.slug}>
-                    <span className="badge">{r.group}</span>
-                    <h3>{r.name}</h3>
-                    <p>{r.shortDescription}</p>
-                    <span className="meta">View details →</span>
-                  </Link>
-                ))}
+        <div className="container service-detail-grid">
+          <div className="service-detail-body">
+            <div className="service-intro-card">
+              <span className="service-icon">
+                <Icon name={getServiceIcon(service)} size="lg" />
+              </span>
+              <div>
+                <span className="badge no-dot">{service.group}</span>
+                <p>
+                  {service.name} at {business.name}. {business.brandsServicedNote}
+                </p>
               </div>
             </div>
-          )}
 
-          <div style={{ marginTop: "2rem" }}>
-            <h2>Serving Aya Nagar & nearby areas</h2>
-            <div className="chip-row" style={{ marginTop: "0.5rem" }}>
-              {serviceAreas.slice(0, 8).map((a) => (
-                <Link key={a.slug} href={`/service-areas/${a.slug}/`} className="chip">{a.name}</Link>
+            <h2>What’s included</h2>
+            <p>
+              The exact scope depends on the vehicle and what the inspection finds. Here is what this
+              service typically covers:
+            </p>
+            <ul className="list-check">
+              {service.included.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+
+            <h2>Signs you may need this</h2>
+            <p>
+              You don’t need to diagnose the problem yourself. If you notice any of these, describe it
+              when you contact us and we’ll take it from there.
+            </p>
+            <ul className="list-check">
+              {service.signs.map((sign) => (
+                <li key={sign}>{sign}</li>
+              ))}
+            </ul>
+
+            <h2>How the visit works</h2>
+            <div className="process-grid process-grid-sm">
+              {[
+                ["Contact & share concern", "Tell us your car details and what you’re experiencing."],
+                ["Inspect & diagnose", "We check the vehicle/service need and identify the scope."],
+                ["Estimate & approval", "We explain findings and share the estimate. You approve before work."],
+                ["Service & handover", "Agreed work is completed with clear communication."],
+              ].map(([title, text], i) => (
+                <div className="process-card" key={title}>
+                  <span className="process-index">{String(i + 1).padStart(2, "0")}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="callout mt-8">
+              <h2>Good to know</h2>
+              <ul className="list-check">
+                <li>{business.policies.parts}</li>
+                <li>{business.policies.pricing}</li>
+                <li>{business.policies.warranty}</li>
+              </ul>
+            </div>
+
+            <h2>Frequently asked questions</h2>
+            <div className="faq-list">
+              {faqs.map((faq) => (
+                <details className="faq-item" key={faq.q}>
+                  <summary>
+                    {faq.q}
+                    <Icon name="plus" size="sm" />
+                  </summary>
+                  <p className="faq-a">{faq.a}</p>
+                </details>
+              ))}
+            </div>
+
+            <h2>Serving Aya Nagar &amp; nearby areas</h2>
+            <p>
+              Our workshop is in Aya Nagar, New Delhi. Customers travel to us from across South Delhi
+              and NCR for this service.
+            </p>
+            <div className="chip-row">
+              {serviceAreas.slice(0, 8).map((area) => (
+                <Link className="chip" href={`/service-areas/${area.slug}/`} key={area.slug}>
+                  {area.name}
+                </Link>
               ))}
             </div>
           </div>
 
-          <div className="card" style={{ marginTop: "2rem", background: "var(--night)", color: "#dce4d6", borderColor: "#263328" }}>
-            <h2 style={{ color: "#fff" }}>Ready to get {service.name.toLowerCase()}?</h2>
-            <p style={{ color: "#c9d3c3" }}>Fastest response on WhatsApp. You can also call or send details by form — we’ll confirm availability directly.</p>
-            <div className="btn-row">
-              <a className="btn btn-primary" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp now</a>
-              <a className="btn btn-secondary" href={business.phone.telHref}>Call</a>
-              <Link className="btn btn-secondary" href="/book">Request service</Link>
+          <aside className="service-aside">
+            <div className="card aside-card">
+              <span className="eyebrow">At a glance</span>
+              <h2>{service.name}</h2>
+              <div className="detail-list">
+                <div className="detail-row">
+                  <span className="k">Category</span>
+                  <span className="v">{service.group}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="k">Price</span>
+                  <span className="v">Confirmed after inspection</span>
+                </div>
+                <div className="detail-row">
+                  <span className="k">Vehicles</span>
+                  <span className="v">All car brands</span>
+                </div>
+                <div className="detail-row">
+                  <span className="k">Location</span>
+                  <span className="v">Aya Nagar, New Delhi</span>
+                </div>
+              </div>
+              <div className="aside-actions">
+                <a
+                  className="btn btn-lime btn-block"
+                  href={whatsapp}
+                  target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+                  rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+                >
+                  <Icon name="whatsapp" size="sm" /> WhatsApp about this
+                </a>
+                <a className="btn btn-outline btn-block" href={getPhoneHref()}>
+                  <Icon name="phone" size="sm" /> {getPhoneLabel()}
+                </a>
+                <Link className="btn btn-ghost btn-block" href={`/book/?service=${encodeURIComponent(service.name)}`}>
+                  Send an enquiry form
+                </Link>
+              </div>
+              <p className="aside-note">
+                No payment is taken online. Availability, scope and estimate are confirmed directly by
+                the garage.
+              </p>
             </div>
+
+            <div className="card aside-card aside-help">
+              <h3>Not sure this is the right service?</h3>
+              <p>
+                Describe the symptom and share a photo or video on WhatsApp. We’ll guide you before you
+                visit.
+              </p>
+              <a
+                className="text-link"
+                href={whatsapp}
+                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+              >
+                Ask on WhatsApp <Icon name="arrow" size="sm" />
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="section compact cream">
+        <div className="container">
+          <div className="section-head-row">
+            <div className="section-head">
+              <span className="eyebrow">Related</span>
+              <h2 className="section-title">Other {service.group.toLowerCase()} services</h2>
+            </div>
+            <div className="section-head-action">
+              <Link className="btn btn-outline btn-sm" href="/services/">
+                All services <Icon name="arrow" size="sm" />
+              </Link>
+            </div>
+          </div>
+          <div className="service-grid">
+            {relatedServices.map((item, index) => (
+              <ServiceCard service={item} index={index} key={item.slug} />
+            ))}
           </div>
         </div>
       </section>
+
+      <CtaBand
+        title={`Ready to get ${service.name.toLowerCase()}?`}
+        text="Fastest response on WhatsApp. You can also call or send details by form — we’ll confirm availability directly."
+        actions={
+          <>
+            <a
+              className="btn btn-dark"
+              href={whatsapp}
+              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            >
+              WhatsApp now <Icon name="whatsapp" size="sm" />
+            </a>
+            <Link className="btn btn-outline" href="/book/">
+              Request service
+            </Link>
+          </>
+        }
+      />
     </>
   );
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { business } from "@/data/business";
 
 export function getSiteUrl() {
@@ -11,6 +12,38 @@ export function absoluteUrl(path = "/") {
   const base = getSiteUrl();
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${base}${p}`;
+}
+
+type PageMetaInput = {
+  title: string;
+  description: string;
+  path: string;
+  type?: "website" | "article";
+};
+
+/** Builds consistent per-page metadata (canonical + Open Graph) so inner pages don't inherit the home OG URL. */
+export function pageMetadata({ title, description, path, type = "website" }: PageMetaInput): Metadata {
+  const ogImage = "/og-image.png";
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      type,
+      locale: "en_IN",
+      siteName: business.name,
+      title,
+      description,
+      url: path,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${business.name} — car service in Aya Nagar, New Delhi` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
 export function getLocalBusinessJsonLd() {

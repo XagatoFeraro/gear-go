@@ -1,80 +1,169 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import JsonLd from "@/components/JsonLd";
 import ContactFormClient from "@/components/ContactFormClient";
-import { business } from "@/data/business";
-import { getBreadcrumbJsonLd } from "@/lib/seo";
+import Icon from "@/components/Icon";
+import JsonLd from "@/components/JsonLd";
+import MapArt from "@/components/MapArt";
+import PageHero from "@/components/PageHero";
+import {
+  business,
+  getEmailHref,
+  getEmailLabel,
+  getMapEmbedUrl,
+  getPhoneHref,
+  getPhoneLabel,
+  getWhatsAppHref,
+  isExternalUrl,
+} from "@/data/business";
+import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact Car Mechanic & Garage in Aya Nagar",
   description: `Contact ${business.name} in Aya Nagar, New Delhi. Call, WhatsApp, get directions or send an enquiry for car service, repairs, car wash or dent removal.`,
-  alternates: { canonical: "/contact/" },
-};
+  path: "/contact/",
+});
+
+const whatsappMessage =
+  "Hi Gear Go Automobiles, I need help with car service. My car is ____ and the issue/service is ____. My location is ____.";
 
 export default function ContactPage() {
-  const wa = business.whatsapp.url.includes("{{")
-    ? "#"
-    : `${business.whatsapp.url}?text=${encodeURIComponent("Hi Gear Go Automobiles, I need help with car service. My car is ____ and the issue/service is ____. My location is ____.")}`;
+  const whatsapp = getWhatsAppHref(whatsappMessage);
+  const mapEmbed = getMapEmbedUrl();
 
   return (
     <>
-      <JsonLd data={getBreadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact/" }])} />
+      <JsonLd
+        data={getBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact/" },
+        ])}
+      />
+
+      <PageHero
+        compact
+        eyebrow="Contact"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "Contact" }]}
+        title={
+          <>
+            Talk to the garage <em>directly.</em>
+          </>
+        }
+        lede="Fastest response on WhatsApp. You can also call, get directions, or send an enquiry form — we’ll confirm availability and next steps."
+      />
+
       <section className="section">
-        <div className="container">
-          <p className="breadcrumb"><Link href="/">Home</Link> / Contact</p>
-          <div className="section-head">
-            <span className="eyebrow">Contact</span>
-            <h1>Contact your local car garage</h1>
-            <p className="lead">Fastest response on WhatsApp. You can also call, get directions, or send an enquiry form — we’ll confirm availability and next steps directly.</p>
+        <div className="container contact-grid">
+          <div>
+            <div className="contact-methods">
+              <a
+                className="contact-method contact-method-primary"
+                href={whatsapp}
+                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+              >
+                <span className="icon-box">
+                  <Icon name="whatsapp" />
+                </span>
+                <div>
+                  <strong>WhatsApp</strong>
+                  <span>Fastest for questions, photos and prefilled enquiries.</span>
+                </div>
+                <Icon name="arrow" size="sm" />
+              </a>
+
+              <a className="contact-method" href={getPhoneHref()}>
+                <span className="icon-box">
+                  <Icon name="phone" />
+                </span>
+                <div>
+                  <strong>{getPhoneLabel()}</strong>
+                  <span>Call during workshop hours to confirm availability.</span>
+                </div>
+                <Icon name="arrow" size="sm" />
+              </a>
+
+              <a
+                className="contact-method"
+                href={business.maps.directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="icon-box">
+                  <Icon name="pin" />
+                </span>
+                <div>
+                  <strong>Directions</strong>
+                  <span>{business.address.full}</span>
+                </div>
+                <Icon name="external" size="sm" />
+              </a>
+
+              <a className="contact-method" href={getEmailHref()}>
+                <span className="icon-box">
+                  <Icon name="mail" />
+                </span>
+                <div>
+                  <strong>{getEmailLabel()}</strong>
+                  <span>For enquiries that aren’t urgent.</span>
+                </div>
+                <Icon name="arrow" size="sm" />
+              </a>
+            </div>
+
+            <div className="hours-card">
+              <span className="eyebrow">Workshop hours</span>
+              <div className="hours-grid">
+                {business.hours.display.map((row) => {
+                  const [day, time] = row.split(": ").length > 1 ? [row.split(": ")[0], row.split(": ").slice(1).join(": ")] : [row, ""];
+                  return (
+                    <div className="hours-row" key={row}>
+                      <strong>{day}</strong>
+                      <span>{time}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="inline-note mt-4">
+                <Icon name="info" size="sm" />
+                <span>
+                  Hours can change on holidays. Call or WhatsApp before travelling if you’re unsure.
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <MapArt />
+            </div>
+
+            {mapEmbed ? (
+              <div className="map-embed">
+                <iframe
+                  title={`${business.name} location map`}
+                  src={mapEmbed}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            ) : null}
+
+            <p className="mt-4">
+              <Link className="text-link" href="/service-areas/">
+                See all service areas <Icon name="arrow" size="sm" />
+              </Link>
+            </p>
           </div>
 
-          <div className="grid grid-2" style={{ alignItems: "start" }}>
-            <div className="stack">
-              <div className="card">
-                <h2>Reach us directly</h2>
-                <div className="stack-sm">
-                  <p><strong>Address</strong><br />{business.address.full}</p>
-                  <p><strong>Phone</strong><br /><a href={business.phone.telHref}>{business.phone.display}</a></p>
-                  <p><strong>WhatsApp</strong><br /><a href={wa} target="_blank" rel="noopener noreferrer">{business.whatsapp.display}</a></p>
-                  <p><strong>Email</strong><br />{business.email}</p>
-                  <p style={{ marginBottom: 0 }}><strong>Hours</strong><br />{business.hours.display.join(" · ")}</p>
-                </div>
-                <div className="btn-row" style={{ marginTop: "1rem" }}>
-                  <a className="btn btn-primary" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                  <a className="btn btn-secondary" href={business.phone.telHref}>Call</a>
-                  <a className="btn btn-secondary" href={business.maps.directionsUrl} target="_blank" rel="noopener noreferrer">Directions</a>
-                </div>
-              </div>
-
-              <div className="card">
-                <h2>Map & directions</h2>
-                <p className="form-note">Use directions for the most accurate route to the workshop.</p>
-                {business.maps.embedUrl && !business.maps.embedUrl.includes("{{") ? (
-                  <iframe
-                    title={`${business.name} location map`}
-                    src={business.maps.embedUrl}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    style={{ width: "100%", height: 260, border: 0, borderRadius: 12, marginTop: "0.5rem" }}
-                  />
-                ) : (
-                  <div className="placeholder-photo" style={{ minHeight: 180, marginTop: "0.5rem" }}>Map placeholder — add embed URL or use directions.</div>
-                )}
-                <div style={{ marginTop: "0.75rem" }}>
-                  <a className="btn btn-secondary" href={business.maps.directionsUrl} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <span className="badge">Option 2</span>
-              <h2 style={{ marginTop: "0.5rem" }}>Send an enquiry form</h2>
-              <p className="muted">Share your details and we’ll get back to confirm availability. No payment or automatic booking.</p>
-              <Suspense fallback={<p>Loading form…</p>}>
-                <ContactFormClient />
-              </Suspense>
-            </div>
+          <div className="contact-panel" id="enquiry">
+            <span className="badge badge-lime no-dot">Enquiry form</span>
+            <h2>Send your details</h2>
+            <p className="section-lede">
+              Share your car, concern and preferred date. We’ll get back to confirm availability. No
+              payment is taken and no booking is confirmed automatically.
+            </p>
+            <Suspense fallback={<p className="form-note">Loading form…</p>}>
+              <ContactFormClient />
+            </Suspense>
           </div>
         </div>
       </section>

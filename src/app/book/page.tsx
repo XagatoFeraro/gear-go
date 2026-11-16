@@ -1,51 +1,131 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
 import EnquiryForm from "@/components/EnquiryForm";
-import { business } from "@/data/business";
-import { getBreadcrumbJsonLd } from "@/lib/seo";
+import Icon from "@/components/Icon";
+import JsonLd from "@/components/JsonLd";
+import PageHero from "@/components/PageHero";
+import { business, getPhoneHref, getPhoneLabel, getWhatsAppHref, isExternalUrl } from "@/data/business";
+import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Request Car Service",
   description: `Request car servicing, repair, car wash or dent removal at ${business.name}. WhatsApp or send an enquiry — we’ll confirm availability directly.`,
-  alternates: { canonical: "/book/" },
-};
+  path: "/book/",
+});
+
+const whatsappMessage =
+  "Hi Gear Go Automobiles, I would like to request a service.\nName:\nCar:\nService needed:\nPreferred date:\nConcern:\nLocation:";
 
 export default function BookPage() {
-  const wa = business.whatsapp.url.includes("{{")
-    ? "/contact"
-    : `${business.whatsapp.url}?text=${encodeURIComponent("Hi Gear Go Automobiles, I would like to request a service.\nName:\nCar:\nService needed:\nPreferred date:\nConcern:\nLocation:")}`;
+  const whatsapp = getWhatsAppHref(whatsappMessage);
 
   return (
     <>
-      <JsonLd data={getBreadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Request service", path: "/book/" }])} />
+      <JsonLd
+        data={getBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Request service", path: "/book/" },
+        ])}
+      />
+
+      <PageHero
+        compact
+        eyebrow="Request service"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "Request service" }]}
+        title={
+          <>
+            Tell us what your car <em>needs.</em>
+          </>
+        }
+        lede="Choose what’s easiest: WhatsApp for the fastest response, or send your details by form. We’ll confirm availability directly — no payment taken and no automatic booking."
+      />
+
       <section className="section">
-        <div className="container" style={{ maxWidth: 1040 }}>
-          <p className="breadcrumb"><Link href="/">Home</Link> / Request service</p>
-          <div className="section-head">
-            <span className="eyebrow">Request service</span>
-            <h1>Request a car service</h1>
-            <p className="lead">Choose what’s easiest: <strong>WhatsApp for the fastest response</strong>, or send your details by form. We’ll confirm availability directly — no payment taken and no automatic booking.</p>
+        <div className="container book-grid">
+          <aside className="book-aside">
+            <span className="badge badge-lime no-dot">Fastest</span>
+            <h2>WhatsApp</h2>
+            <p>
+              Message us with your car, the service needed and your preferred time. Great for quick
+              questions and for sharing photos or videos of the issue.
+            </p>
+            <a
+              className="btn btn-lime btn-block"
+              href={whatsapp}
+              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
+              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            >
+              <Icon name="whatsapp" size="sm" /> Open WhatsApp
+            </a>
+            <p className="form-note mt-4">
+              Opens with a prefilled message — you can edit it before sending. No payment is taken in
+              WhatsApp either.
+            </p>
+
+            <div className="book-aside-divider" />
+
+            <p className="book-aside-label">Prefer to talk?</p>
+            <a className="btn btn-outline btn-block" href={getPhoneHref()}>
+              <Icon name="phone" size="sm" /> {getPhoneLabel()}
+            </a>
+
+            <div className="book-aside-divider" />
+
+            <ul className="book-steps">
+              <li>
+                <span>01</span> We review your details.
+              </li>
+              <li>
+                <span>02</span> We confirm availability and timing.
+              </li>
+              <li>
+                <span>03</span> You visit for inspection and estimate.
+              </li>
+              <li>
+                <span>04</span> Work begins only after your approval.
+              </li>
+            </ul>
+
+            <p className="inline-note mt-4">
+              <Icon name="info" size="sm" />
+              <span>
+                This form is an enquiry, not a confirmed slot. {business.policies.pricing}
+              </span>
+            </p>
+          </aside>
+
+          <div className="contact-panel book-form-panel">
+            <span className="badge no-dot">Enquiry form</span>
+            <h2>Send your service details</h2>
+            <p className="section-lede">
+              Fill in what you know. If the form provider isn’t configured, your details will open in
+              WhatsApp so the garage still receives them.
+            </p>
+            <EnquiryForm />
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-2" style={{ alignItems: "start" }}>
-            <div className="card" style={{ borderColor: "#cfe8b0", background: "#fbfff5" }}>
-              <span className="badge">Fastest</span>
-              <h2 style={{ marginTop: "0.5rem" }}>WhatsApp</h2>
-              <p className="muted">Message us with your car, service needed (servicing, car wash, dent removal, AC, etc.) and preferred time. Great for quick questions and photos/videos.</p>
-              <a className="btn btn-primary" href={wa} target="_blank" rel="noopener noreferrer" style={{ width: "100%" }}>Open WhatsApp</a>
-              <p className="form-note" style={{ marginTop: "0.75rem" }}>Opens with a prefilled message — you can edit before sending.</p>
+      <section className="section compact cream">
+        <div className="container">
+          <div className="callout callout-wide">
+            <div>
+              <span className="eyebrow">What happens next</span>
+              <h2>An enquiry, then a conversation</h2>
+              <p>
+                We review your details, confirm availability/timing, and guide you on the next step.
+                Inspection and estimate come before any paid work. There is no online payment and no
+                automatic booking. {business.policies.pricing}
+              </p>
             </div>
-
-            <div className="card">
-              <span className="badge" style={{ background: "var(--paper-2)", color: "var(--ink-soft)" }}>Option 2</span>
-              <h2 style={{ marginTop: "0.5rem" }}>Enquiry form</h2>
-              <EnquiryForm />
+            <div className="btn-group">
+              <Link className="btn btn-outline" href="/services/">
+                Browse services <Icon name="arrow" size="sm" />
+              </Link>
+              <Link className="btn btn-ghost" href="/contact/">
+                Contact &amp; directions
+              </Link>
             </div>
-          </div>
-
-          <div className="callout" style={{ marginTop: "1.5rem" }}>
-            <p style={{ margin: 0 }}><strong>What happens next?</strong> We review your details, confirm availability/timing, and guide you. Inspection and estimate come before any paid work. {business.policies.pricing}</p>
           </div>
         </div>
       </section>
