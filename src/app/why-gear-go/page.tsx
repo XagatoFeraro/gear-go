@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import { business, getPhoneHref, getPhoneLabel, getWhatsAppHref, isExternalUrl } from "@/data/business";
+import { business, getPhoneLabel } from "@/data/business";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -38,11 +39,6 @@ const points = [
 ];
 
 export default function WhyPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd
@@ -59,9 +55,14 @@ export default function WhyPage() {
         lede="Honest inspection, clear estimates, your approval before work, and practical support for car owners in Aya Nagar and nearby areas."
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               Ask us anything <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--light" href="/services/">
               Explore services
             </Link>
@@ -163,12 +164,17 @@ export default function WhyPage() {
               <h3>Talk it through</h3>
               <p>Share your car make, model and concern. We will tell you what we can help with.</p>
               <div className="aside-actions">
-                <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+                <ChannelLink
+                  channel="whatsapp"
+                  message={whatsappMessage}
+                  className="btn btn--primary btn--block"
+                  fallback="Send an enquiry"
+                >
                   <Icon name="whatsapp" size="sm" /> WhatsApp us
-                </a>
-                <a className="btn btn--outline btn--block" href={getPhoneHref()}>
+                </ChannelLink>
+                <ChannelLink channel="phone" className="btn btn--outline btn--block" fallback="Contact options">
                   <Icon name="phone" size="sm" /> {getPhoneLabel()}
-                </a>
+                </ChannelLink>
               </div>
             </div>
           </aside>
@@ -177,12 +183,17 @@ export default function WhyPage() {
 
       <CtaBand
         title="Have a concern you want checked?"
-        text="Send your car details on WhatsApp or call. We will confirm availability and the next step."
+        text="Send your car details through the contact options. A person will reply directly."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/book/">
               Request a service
             </Link>

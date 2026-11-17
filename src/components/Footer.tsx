@@ -1,20 +1,11 @@
 import Link from "next/link";
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
-import {
-  business,
-  getEmailHref,
-  getEmailLabel,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-  isPlaceholder,
-  services,
-} from "@/data/business";
+import { business, getEmailLabel, getPhoneLabel, services } from "@/data/business";
 
 export default function Footer() {
   const featured = services.slice(0, 5);
-  const whatsapp = getWhatsAppHref("Hi Gear Go Automobiles, I need help with my car.");
+  const whatsappMessage = "Hi Gear Go Automobiles, I need help with my car.";
 
   return (
     <footer className="site-footer">
@@ -31,17 +22,15 @@ export default function Footer() {
             </p>
             <p>{business.address.full}</p>
             <div className="footer-contacts">
-              <a href={getPhoneHref()}>
-                {isPlaceholder(business.phone.display) ? "Call or WhatsApp" : getPhoneLabel()}
-              </a>
-              <a
-                href={whatsapp}
-                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-              >
+              <ChannelLink channel="phone" fallback="Contact options">
+                {getPhoneLabel()}
+              </ChannelLink>
+              <ChannelLink channel="whatsapp" message={whatsappMessage} fallback="Enquire">
                 WhatsApp
-              </a>
-              <a href={getEmailHref()}>{getEmailLabel()}</a>
+              </ChannelLink>
+              <ChannelLink channel="email" fallback="Send an enquiry">
+                {getEmailLabel()}
+              </ChannelLink>
             </div>
             <a
               className="footer-directions"

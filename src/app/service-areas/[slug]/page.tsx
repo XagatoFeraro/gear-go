@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
@@ -10,10 +11,7 @@ import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
 import {
   business,
-  getPhoneHref,
   getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
   isPlaceholder,
   serviceAreas,
   services,
@@ -33,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!area) return {};
   return pageMetadata({
     title: `Car Service & Mechanic in ${area.name}`,
-    description: `Need a car mechanic or garage near ${area.name}? ${business.name} in Aya Nagar, New Delhi offers car servicing, repairs, car wash and dent removal for ${area.name}. Call or WhatsApp.`,
+    description: `Need a car mechanic or garage near ${area.name}? ${business.name} in Aya Nagar, New Delhi offers car servicing, repairs, car wash and dent removal for ${area.name}.`,
     path: `/service-areas/${slug}/`,
   });
 }
@@ -43,12 +41,7 @@ export default async function AreaDetail({ params }: Props) {
   const area = serviceAreas.find((a) => a.slug === slug);
   if (!area) notFound();
 
-  const whatsapp = getWhatsAppHref(
-    `Hi Gear Go Automobiles, I need car service near ${area.name}. My car is ____ and the issue/service is ____.`,
-  );
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
+  const whatsappMessage = `Hi Gear Go Automobiles, I need car service near ${area.name}. My car is ____ and the issue/service is ____.`;
   const focusServices = area.focus
     .map((serviceSlug) => services.find((service) => service.slug === serviceSlug))
     .filter(Boolean) as typeof services;
@@ -75,12 +68,17 @@ export default async function AreaDetail({ params }: Props) {
         lede={area.context}
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               WhatsApp about {area.name} <Icon name="whatsapp" size="sm" />
-            </a>
-            <a className="btn btn--light" href={getPhoneHref()}>
+            </ChannelLink>
+            <ChannelLink channel="phone" className="btn btn--light" fallback="Contact options">
               <Icon name="phone" size="sm" /> {getPhoneLabel()}
-            </a>
+            </ChannelLink>
             <a
               className="btn btn--light"
               href={business.maps.directionsUrl}
@@ -119,7 +117,7 @@ export default async function AreaDetail({ params }: Props) {
                 <strong>Arriving by car</strong>
                 <span>
                   {isPlaceholder(business.parkingNote)
-                    ? "Parking and arrival details are confirmed when you call or WhatsApp."
+                    ? "Parking and arrival details are shared when you enquire."
                     : business.parkingNote}
                 </span>
               </div>
@@ -176,12 +174,12 @@ export default async function AreaDetail({ params }: Props) {
             <SectionHead
               label="Before you visit"
               title="What to expect from your enquiry"
-              lede="Send your car make and model, the concern and your locality. We will confirm availability and the next step, then inspect the car before any paid work."
+              lede="Send your car make and model, the concern and your locality. We inspect the car before any paid work and explain the findings first."
             />
             <ol className="spec">
               {[
-                ["Send the car and concern", "WhatsApp, call or the enquiry form. A photo or short video helps."],
-                ["We confirm availability", "You get a direct reply, not an automated booking confirmation."],
+                ["Send the car and concern", "Use the enquiry form or the contact options. A photo or short video helps."],
+                ["We reply directly", "A person reads your enquiry. Nothing is confirmed automatically."],
                 ["Inspection and estimate", "Findings, options and price are explained at the workshop."],
                 ["Approved work only", "Nothing extra is added without discussing it with you first."],
               ].map(([title, text], i) => (
@@ -194,9 +192,14 @@ export default async function AreaDetail({ params }: Props) {
               ))}
             </ol>
             <div className="btn-row mt-6">
-              <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+              <ChannelLink
+                channel="whatsapp"
+                message={whatsappMessage}
+                className="btn btn--primary"
+                fallback="Send an enquiry"
+              >
                 <Icon name="whatsapp" size="sm" /> WhatsApp us
-              </a>
+              </ChannelLink>
               <Link className="btn btn--outline" href="/book/">
                 Enquiry form
               </Link>
@@ -218,12 +221,17 @@ export default async function AreaDetail({ params }: Props) {
 
       <CtaBand
         title={`Car care for ${area.name}, without the guesswork.`}
-        text="Inspection first, a clear estimate, and your approval before work. Call or WhatsApp to confirm availability."
+        text="Inspection first, a clear estimate, and your approval before work."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp now <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/service-areas/">
               All service areas
             </Link>

@@ -1,20 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-  serviceAreas,
-} from "@/data/business";
+import { business, getPhoneLabel, serviceAreas } from "@/data/business";
 import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
@@ -28,11 +22,6 @@ const whatsappMessage =
   "Hi Gear Go Automobiles, I need car service. My area is ____. My car is ____ and the issue/service is ____.";
 
 export default function AreasPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd
@@ -49,9 +38,14 @@ export default function AreasPage() {
         lede="One workshop in Phase 4, H Block, Aya Nagar. Car owners come to us from across South Delhi and NCR because the inspection, scope and estimate happen before any paid work."
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               Confirm your area <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <a
               className="btn btn--light"
               href={business.maps.directionsUrl}
@@ -96,9 +90,9 @@ export default function AreasPage() {
               >
                 Open directions <Icon name="external" size="sm" />
               </a>
-              <a className="btn btn--outline" href={getPhoneHref()}>
+              <ChannelLink channel="phone" className="btn btn--outline" fallback="Contact options">
                 <Icon name="phone" size="sm" /> {getPhoneLabel()}
-              </a>
+              </ChannelLink>
             </div>
             <p className="note mt-6">
               <Icon name="car" size="sm" />
@@ -117,7 +111,7 @@ export default function AreasPage() {
           <SectionHead
             label="Localities"
             title="Areas we serve"
-            lede="Pick your locality for a practical note on getting here and the services owners ask about most. If your area is not listed, call or WhatsApp and we will confirm."
+            lede="Pick your locality for a practical note on getting here and the services owners ask about most. If your area is not listed, send an enquiry."
           />
           <div className="ledger">
             {serviceAreas.map((area, index) => (
@@ -174,15 +168,20 @@ export default function AreasPage() {
               ))}
             </ol>
             <div className="btn-row mt-6">
-              <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+              <ChannelLink
+                channel="whatsapp"
+                message={whatsappMessage}
+                className="btn btn--primary"
+                fallback="Send an enquiry"
+              >
                 <Icon name="whatsapp" size="sm" /> Send on WhatsApp
-              </a>
+              </ChannelLink>
               <Link className="btn btn--outline" href="/book/">
                 Use the enquiry form
               </Link>
             </div>
             <p className="photo-note">
-              The image on this page is illustrative and will be replaced with a real workshop photo.
+              Photo slot for a real Gear Go workshop photo.
             </p>
           </div>
         </div>

@@ -24,19 +24,26 @@ export default function PhotoTile({ href, title, text, photo, idx }: Props) {
   return (
     <Link href={href} className="tile">
       <span className="tile__media">
-        <picture>
-          <source type="image/webp" srcSet={webp} sizes={sizes} />
-          <img
-            src={withBasePath(`/images/${photo.id}-${mid}.jpg`)}
-            srcSet={jpg}
-            sizes={sizes}
-            width={photo.width}
-            height={photo.height}
-            alt={photo.alt}
-            loading={idx < 3 ? "eager" : "lazy"}
-            decoding="async"
-          />
-        </picture>
+        {photo.placeholder ? (
+          <span className="photo__panel photo__panel--tile" role="img" aria-label={photo.alt}>
+            <span className="photo__panel-label">Photo to be added</span>
+            <span className="photo__panel-slot">{photo.id}</span>
+          </span>
+        ) : (
+          <picture>
+            <source type="image/webp" srcSet={webp} sizes={sizes} />
+            <img
+              src={withBasePath(`/images/${photo.id}-${mid}.jpg`)}
+              srcSet={jpg}
+              sizes={sizes}
+              width={photo.width}
+              height={photo.height}
+              alt={photo.alt}
+              loading={idx < 3 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          </picture>
+        )}
       </span>
       <span className="tile__body">
         <span className="tile__title">{title}</span>

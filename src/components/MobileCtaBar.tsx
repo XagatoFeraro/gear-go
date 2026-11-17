@@ -1,29 +1,25 @@
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
-import {
-  business,
-  getPhoneHref,
-  getWhatsAppHref,
-  isExternalUrl,
-} from "@/data/business";
+import { business } from "@/data/business";
 
 export default function MobileCtaBar() {
-  const whatsapp = getWhatsAppHref("Hi Gear Go Automobiles, I need help with my car.");
+  const whatsappMessage = "Hi Gear Go Automobiles, I need help with my car.";
 
   return (
     <nav className="mobile-bar" aria-label="Quick contact">
-      <a href={getPhoneHref()}>
+      <ChannelLink channel="phone" fallback="Contact">
         <Icon name="phone" />
         <span>Call</span>
-      </a>
-      <a
-        href={whatsapp}
+      </ChannelLink>
+      <ChannelLink
+        channel="whatsapp"
+        message={whatsappMessage}
         className="is-primary"
-        target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-        rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+        fallback="Enquire"
       >
         <Icon name="whatsapp" />
         <span>WhatsApp</span>
-      </a>
+      </ChannelLink>
       <a href={business.maps.directionsUrl} target="_blank" rel="noopener noreferrer">
         <Icon name="pin" />
         <span>Directions</span>

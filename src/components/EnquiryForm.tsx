@@ -1,23 +1,27 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
-import { business, getWhatsAppHref, services } from "@/data/business";
+import {
+  business,
+  getWhatsAppUrl,
+  hasFormEndpoint,
+  isWhatsAppConfigured,
+  services,
+} from "@/data/business";
 
 type Props = {
   initialService?: string;
   variant?: "full" | "hero";
 };
 
-type Status = "idle" | "submitting" | "success" | "error";
-
-function isConfiguredEndpoint(endpoint: string) {
-  return !!endpoint && !endpoint.includes("{{") && /^https?:\/\//.test(endpoint);
-}
+type Status = "idle" | "submitting" | "success" | "handoff" | "error";
 
 export default function EnquiryForm({ initialService, variant = "full" }: Props) {
   const isHero = variant === "hero";
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string>("");
+  const [copied, setCopied] = useState(false);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -30,11 +34,14 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
     company: "", // honeypot
   });
 
-  const waFallback = useMemo(() => {
-    const msg = `Hi ${business.name}, I would like to request a service.\nName: ${form.name}\nPhone: ${form.phone}\nCar: ${form.car}\nRegistration: ${form.registration || "-"}\nService needed: ${form.service || "-"}\nPreferred date: ${form.preferredDate || "-"}\nConcern: ${form.concern || "-"}`;
-    return getWhatsAppHref(msg);
-  }, [form]);
-  const whatsappReady = /^https?:\/\//.test(waFallback);
+  const detailText = useMemo(
+    () =>
+      `${business.name} — service enquiry\nName: ${form.name}\nMobile: ${form.phone}\nCar: ${form.car}\nRegistration: ${form.registration || "-"}\nService: ${form.service || "-"}\nPreferred date: ${form.preferredDate || "-"}\nConcern: ${form.concern || "-"}`,
+    [form],
+  );
+  const waFallback = useMemo(() => getWhatsAppUrl(`Hi ${business.name}. ${detailText}`), [detailText]);
+  const whatsappReady = isWhatsAppConfigured();
+  const endpointReady = hasFormEndpoint();
 
   function update<K extends keyof typeof form>(key: K, value: (typeof form)[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -60,16 +67,15 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
       return;
     }
 
-    const endpoint = business.form.endpoint;
-    if (!isConfiguredEndpoint(endpoint)) {
-      // The form provider is not configured yet, so hand the filled details to
-      // WhatsApp instead of losing the enquiry.
-      if (/^https?:\/\//.test(waFallback)) {
-        window.open(waFallback, "_blank", "noopener,noreferrer");
+    if (!endpointReady) {
+      if (whatsappReady && waFallback) {
+        const opened = window.open(waFallback, "_blank", "noopener,noreferrer");
+        setStatus(opened ? "success" : "handoff");
       } else {
-        window.location.href = waFallback;
+        // Nothing is configured to receive the enquiry. Keep the details on
+        // screen rather than navigating away or pretending they were sent.
+        setStatus("handoff");
       }
-      setStatus("success");
       return;
     }
 
@@ -87,7 +93,7 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
         source: "gear-go-website",
         _subject: `New enquiry: ${form.service || "Car service"} - ${form.name}`,
       };
-      const res = await fetch(endpoint, {
+      const res = await fetch(business.form.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
@@ -116,14 +122,39 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
   if (status === "success") {
     return (
       <div className="form__success" role="status">
-        <h3>Enquiry details shared</h3>
+        <h3>{endpointReady ? "Enquiry sent" : "Open WhatsApp to send"}</h3>
         <p>
-          {isConfiguredEndpoint(business.form.endpoint)
-            ? "Thank you, we have received your enquiry. We will contact you to confirm availability and the next step. No payment was taken and no booking is confirmed automatically."
-            : whatsappReady
-              ? "Your details were opened in WhatsApp so the garage can receive them quickly. If WhatsApp did not open, please call. We will confirm availability directly. No payment was taken and no booking is confirmed automatically."
-              : "Your details are ready to share on the contact page, where you can also call. We will confirm availability directly. No payment was taken and no booking is confirmed automatically."}
+          {endpointReady
+            ? "Thank you, we have received your enquiry. No payment was taken and no booking is confirmed automatically."
+            : "Your details are ready in the WhatsApp message that opened. Check that it was sent before closing WhatsApp. No payment was taken and no booking is confirmed automatically."}
         </p>
+      </div>
+    );
+  }
+
+  if (status === "handoff") {
+    return (
+      <div className="form__success form__handoff" role="status">
+        <h3>Your details are ready — nothing was sent</h3>
+        <p>
+          Online form delivery and WhatsApp are not configured yet. Copy the details below and send
+          them through a confirmed channel. No payment was taken and no booking is confirmed.
+        </p>
+        <pre className="form__copy-text">{detailText}</pre>
+        <button
+          type="button"
+          className="btn btn--dark btn--sm"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(detailText);
+              setCopied(true);
+            } catch {
+              setCopied(false);
+            }
+          }}
+        >
+          {copied ? "Copied" : "Copy details"}
+        </button>
       </div>
     );
   }
@@ -294,7 +325,7 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
             {status === "submitting" ? "Sending..." : "Send enquiry"}
           </button>
           <p className="form__alt">
-            {whatsappReady ? (
+            {whatsappReady && waFallback ? (
               <>
                 Prefer WhatsApp?{" "}
                 <a href={waFallback} target="_blank" rel="noopener noreferrer">
@@ -304,9 +335,8 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
               </>
             ) : (
               <>
-                Prefer to talk?{" "}
-                <a href={waFallback}>Use the contact page</a> for phone, directions and the enquiry
-                form.
+                Need phone or directions?{" "}
+                <Link href="/contact/">See contact options</Link>.
               </>
             )}
           </p>
@@ -317,20 +347,21 @@ export default function EnquiryForm({ initialService, variant = "full" }: Props)
             <button type="submit" className="btn btn--dark" disabled={status === "submitting"}>
               {status === "submitting" ? "Sending..." : "Send enquiry"}
             </button>
-            <a
-              className="btn btn--outline"
-              href={waFallback}
-              target={whatsappReady ? "_blank" : undefined}
-              rel={whatsappReady ? "noopener noreferrer" : undefined}
-            >
-              {whatsappReady ? "Send details on WhatsApp instead" : "Go to the contact page"}
-            </a>
+            {whatsappReady && waFallback ? (
+              <a className="btn btn--outline" href={waFallback} target="_blank" rel="noopener noreferrer">
+                Send details on WhatsApp instead
+              </a>
+            ) : (
+              <Link className="btn btn--outline" href="/contact/">
+                Contact options
+              </Link>
+            )}
           </div>
-          {!isConfiguredEndpoint(business.form.endpoint) ? (
+          {!endpointReady ? (
             <p className="form__note">
               {whatsappReady
-                ? "The enquiry form opens WhatsApp with your filled details so the garage receives them quickly. You can also call or WhatsApp anytime."
-                : "Phone, WhatsApp and this form are confirmed on the contact page so your enquiry reaches the garage. No payment is taken online."}
+                ? "Online form delivery is not set up yet. Submitting opens WhatsApp with your filled details. Check that the message was sent."
+                : "Online delivery is not set up yet. Submitting keeps your details on this page so you can copy them — nothing is sent from the website."}
             </p>
           ) : null}
         </>

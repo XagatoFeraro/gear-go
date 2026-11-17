@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-} from "@/data/business";
+import { business, getHoursText, getPhoneLabel } from "@/data/business";
 import { getBreadcrumbJsonLd, getFaqJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -23,7 +18,7 @@ export const metadata: Metadata = pageMetadata({
 const faqs = [
   {
     q: "How do I request a car service or mechanic near Aya Nagar?",
-    a: "WhatsApp us, call, or submit the enquiry form. We will confirm availability and the next step directly. This website does not take payments or confirm bookings automatically.",
+    a: "Send the enquiry form, or use the phone and WhatsApp details on the contact page. This website does not take payments or confirm bookings automatically.",
   },
   {
     q: "Do you give an estimate before work?",
@@ -47,18 +42,13 @@ const faqs = [
   },
   {
     q: "Where is the garage and what are your hours?",
-    a: `${business.address.full}. Hours: ${business.hours.display.join(" · ")}.`,
+    a: `${business.address.full}. ${getHoursText()}.`,
   },
 ];
 
 const whatsappMessage = "Hi Gear Go Automobiles, I have a question about car service.";
 
 export default function FaqPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd
@@ -109,12 +99,17 @@ export default function FaqPage() {
                 happens next.
               </p>
               <div className="aside-actions">
-                <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+                <ChannelLink
+                  channel="whatsapp"
+                  message={whatsappMessage}
+                  className="btn btn--primary btn--block"
+                  fallback="Send an enquiry"
+                >
                   <Icon name="whatsapp" size="sm" /> WhatsApp us
-                </a>
-                <a className="btn btn--outline btn--block" href={getPhoneHref()}>
+                </ChannelLink>
+                <ChannelLink channel="phone" className="btn btn--outline btn--block" fallback="Contact options">
                   <Icon name="phone" size="sm" /> {getPhoneLabel()}
-                </a>
+                </ChannelLink>
                 <Link className="btn btn--outline btn--block" href="/book/">
                   Send an enquiry form
                 </Link>
@@ -142,12 +137,17 @@ export default function FaqPage() {
 
       <CtaBand
         title="Prefer a conversation?"
-        text="Call or WhatsApp with your car details. No payment is taken online and no booking is confirmed automatically."
+        text="Send your car details through the contact options. No payment is taken online and no booking is confirmed automatically."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/contact/">
               Contact &amp; directions
             </Link>

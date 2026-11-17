@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: `%s | ${business.name}`,
   },
   description:
-    "Multi-brand car garage in Aya Nagar, New Delhi. Car servicing, mechanic repairs, AC service, car wash, denting & painting, brakes, battery, tyres and diagnostics. Call or WhatsApp for a quick response.",
+    "Multi-brand car garage in Aya Nagar, New Delhi. Car servicing, mechanic repairs, AC service, car wash, denting & painting, brakes, battery, tyres and diagnostics. Send an enquiry or use the contact options.",
   keywords: [
     "car service Aya Nagar",
     "mechanic near me",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: business.name,
     title: `Car Service & Mechanic in Aya Nagar, New Delhi | ${business.name}`,
     description:
-      "Multi-brand car service, repairs, car wash, denting & painting in Aya Nagar, New Delhi. Call or WhatsApp for quick help.",
+      "Multi-brand car service, repairs, car wash, denting & painting in Aya Nagar, New Delhi. Send an enquiry or use the contact options.",
     url: "/",
     images: [
       {

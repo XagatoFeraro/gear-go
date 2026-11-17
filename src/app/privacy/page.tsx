@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
 import PageHero from "@/components/PageHero";
-import {
-  business,
-  getEmailHref,
-  getEmailLabel,
-  getPhoneHref,
-  getPhoneLabel,
-} from "@/data/business";
+import { business, getEmailLabel, getPhoneLabel } from "@/data/business";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -71,9 +67,8 @@ export default function PrivacyPage() {
 
             <h2>Your choices</h2>
             <p>
-              You can ask us to update or delete information you have shared by contacting us at{" "}
-              <a href={getEmailHref()}>{getEmailLabel()}</a> or{" "}
-              <a href={getPhoneHref()}>{getPhoneLabel()}</a>.
+              You can ask us to update or delete information you have shared by using the{" "}
+              <Link href="/contact/">contact page</Link>.
             </p>
 
             <h2>Contact</h2>
@@ -82,9 +77,15 @@ export default function PrivacyPage() {
               <br />
               {business.address.full}
               <br />
-              Phone / WhatsApp: <a href={getPhoneHref()}>{getPhoneLabel()}</a>
+              Phone / WhatsApp:{" "}
+              <ChannelLink channel="phone" fallback="See contact options">
+                {getPhoneLabel()}
+              </ChannelLink>
               <br />
-              Email: <a href={getEmailHref()}>{getEmailLabel()}</a>
+              Email:{" "}
+              <ChannelLink channel="email" fallback="See contact options">
+                {getEmailLabel()}
+              </ChannelLink>
             </p>
           </div>
 

@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-} from "@/data/business";
+import { business, getPhoneLabel } from "@/data/business";
 import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
@@ -26,11 +21,6 @@ export const metadata: Metadata = pageMetadata({
 const whatsappMessage = "Hi Gear Go Automobiles, I'd like to know more about the garage and services.";
 
 export default function AboutPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd
@@ -47,9 +37,14 @@ export default function AboutPage() {
         lede={`${business.name} is a multi-brand car service garage in Aya Nagar, New Delhi. Inspection-first recommendations, plain-language explanations, and work you approve.`}
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               Talk to us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--light" href="/services/">
               View services
             </Link>
@@ -93,7 +88,7 @@ export default function AboutPage() {
         </div>
         <div className="wrap">
           <p className="photo-note">
-            Illustrative images, not our workshop. They will be replaced with real Gear Go photos.
+            Photo slots for real Gear Go photos.
           </p>
         </div>
       </section>
@@ -149,7 +144,7 @@ export default function AboutPage() {
             <SectionHead
               label="Visit"
               title="Find the workshop"
-              lede="Use directions for the current route and travel time. If you are unsure about parking or arrival, call or WhatsApp before you leave."
+              lede="Use directions for the current route and travel time. If you are unsure about parking or arrival, ask when you enquire."
             />
             <div className="hours">
               <div className="hours__row">
@@ -179,9 +174,9 @@ export default function AboutPage() {
               >
                 Get directions <Icon name="external" size="sm" />
               </a>
-              <a className="btn btn--outline" href={getPhoneHref()}>
+              <ChannelLink channel="phone" className="btn btn--outline" fallback="Contact options">
                 <Icon name="phone" size="sm" /> {getPhoneLabel()}
-              </a>
+              </ChannelLink>
             </div>
           </div>
           <MapEmbed title="Gear Go Automobiles workshop location in Aya Nagar, New Delhi" />
@@ -190,12 +185,17 @@ export default function AboutPage() {
 
       <CtaBand
         title="Have a question before you visit?"
-        text="Tell us your car and concern. We will guide you on the likely next step and what to expect."
+        text="Tell us your car and concern. We will explain what the visit should cover."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/contact/">
               Contact the garage
             </Link>

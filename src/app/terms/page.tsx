@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import PageHero from "@/components/PageHero";
-import {
-  business,
-  getEmailHref,
-  getEmailLabel,
-  getPhoneHref,
-  getPhoneLabel,
-} from "@/data/business";
+import { business } from "@/data/business";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -59,9 +53,7 @@ export default function TermsPage() {
 
             <h2>Contact</h2>
             <p>
-              Questions? Contact {business.name} at{" "}
-              <a href={getPhoneHref()}>{getPhoneLabel()}</a> or{" "}
-              <a href={getEmailHref()}>{getEmailLabel()}</a>.
+              Questions? Use the <Link href="/contact/">contact page</Link> to reach {business.name}.
             </p>
           </div>
 

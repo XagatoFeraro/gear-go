@@ -25,7 +25,7 @@ export type Photo = {
   placeholder: boolean;
 };
 
-const NOTE = "Illustrative image, not our workshop. To be replaced with a real Gear Go photo.";
+const NOTE = "Photo slot — a real Gear Go photo will be added here.";
 
 function photo(
   id: string,

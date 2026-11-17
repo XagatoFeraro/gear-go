@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import {
-  business,
-  getWhatsAppHref,
-  isExternalUrl,
-  services,
-} from "@/data/business";
+import { business, services } from "@/data/business";
 import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
@@ -46,11 +42,6 @@ const whatsappMessage =
   "Hi Gear Go Automobiles, I need help choosing the right service for my car. My car is ____ and the issue is ____.";
 
 export default function ServicesPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd
@@ -67,9 +58,14 @@ export default function ServicesPage() {
         lede="Maintenance, diagnostics, repairs, bodywork and cleaning. Each service starts with the car being checked, a clear scope, and your approval before paid work."
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               Ask what you need <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--light" href="/book/">
               Request a service
             </Link>
@@ -164,12 +160,17 @@ export default function ServicesPage() {
 
       <CtaBand
         title="Describe the car and the problem."
-        text="A short message is enough. We will confirm availability, inspect the car, and share the scope and estimate before work."
+        text="A short message is enough. We inspect the car, then share the scope and estimate before work."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/contact/">
               Contact &amp; directions
             </Link>

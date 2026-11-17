@@ -27,21 +27,35 @@ export default function Figure({
   const fallbackWidth = photo.widths[Math.floor(photo.widths.length / 2)] ?? photo.widths[0];
   return (
     <figure className={`photo${className ? ` ${className}` : ""}`} style={ratio ? { ["--photo-ratio" as string]: ratio } : undefined}>
-      <picture>
-        <source type="image/webp" srcSet={srcSet(photo, "webp")} sizes={sizes} />
-        <img
-          src={withBasePath(`/images/${photo.id}-${fallbackWidth}.jpg`)}
-          srcSet={srcSet(photo, "jpg")}
-          sizes={sizes}
-          width={photo.width}
-          height={photo.height}
-          alt={photo.alt}
-          loading={eager ? "eager" : "lazy"}
-          fetchPriority={eager ? "high" : undefined}
-          decoding="async"
-        />
-      </picture>
-      {showCaption && photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
+      {photo.placeholder ? (
+        <div
+          className="photo__panel"
+          role="img"
+          aria-label={photo.alt}
+          style={{ aspectRatio: ratio ?? `${photo.width} / ${photo.height}` }}
+        >
+          <span className="photo__panel-label">Photo to be added</span>
+          <span className="photo__panel-slot">{photo.id}</span>
+        </div>
+      ) : (
+        <picture>
+          <source type="image/webp" srcSet={srcSet(photo, "webp")} sizes={sizes} />
+          <img
+            src={withBasePath(`/images/${photo.id}-${fallbackWidth}.jpg`)}
+            srcSet={srcSet(photo, "jpg")}
+            sizes={sizes}
+            width={photo.width}
+            height={photo.height}
+            alt={photo.alt}
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : undefined}
+            decoding="async"
+          />
+        </picture>
+      )}
+      {photo.caption && (showCaption || photo.placeholder) ? (
+        <figcaption>{photo.caption}</figcaption>
+      ) : null}
     </figure>
   );
 }

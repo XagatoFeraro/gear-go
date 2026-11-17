@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import ContactChannelRow from "@/components/ContactChannelRow";
 import ContactFormClient from "@/components/ContactFormClient";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
@@ -8,12 +9,10 @@ import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
 import {
   business,
-  getEmailHref,
   getEmailLabel,
-  getPhoneHref,
   getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
+  getWhatsAppLabel,
+  isWhatsAppConfigured,
 } from "@/data/business";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
@@ -27,10 +26,9 @@ const whatsappMessage =
   "Hi Gear Go Automobiles, I need help with car service. My car is ____ and the issue/service is ____. My location is ____.";
 
 export default function ContactPage() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
+  const lede = isWhatsAppConfigured()
+    ? "WhatsApp, phone, directions and an enquiry form are listed below. If WhatsApp is not set up yet, use the form."
+    : "Send an enquiry, get directions, or check here for phone and WhatsApp details once they are confirmed. No payment is taken and no booking is confirmed automatically.";
 
   return (
     <>
@@ -46,34 +44,21 @@ export default function ContactPage() {
         label="Contact"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Contact" }]}
         title="Talk to the garage directly"
-        lede="Fastest response on WhatsApp. You can also call, get directions, or send an enquiry form. We will confirm availability and the next step."
+        lede={lede}
       />
 
       <section className="section">
         <div className="wrap split split--wide">
           <div>
             <div className="contact-rows">
-              <a className="crow" href={whatsapp} {...waAttrs}>
-                <span className="crow__icon">
-                  <Icon name="whatsapp" size="sm" />
-                </span>
-                <span className="crow__main">
-                  <span className="crow__label">WhatsApp</span>
-                  <span className="crow__value">Fastest for questions, photos and enquiries</span>
-                </span>
-                <Icon name="arrow" size="sm" />
-              </a>
+              <ContactChannelRow
+                channel="whatsapp"
+                message={whatsappMessage}
+                label="WhatsApp"
+                value={isWhatsAppConfigured() ? getWhatsAppLabel() : "Pending confirmation"}
+              />
 
-              <a className="crow" href={getPhoneHref()}>
-                <span className="crow__icon">
-                  <Icon name="phone" size="sm" />
-                </span>
-                <span className="crow__main">
-                  <span className="crow__label">Phone</span>
-                  <span className="crow__value">{getPhoneLabel()}</span>
-                </span>
-                <Icon name="arrow" size="sm" />
-              </a>
+              <ContactChannelRow channel="phone" label="Phone" value={getPhoneLabel()} />
 
               <a
                 className="crow"
@@ -91,16 +76,7 @@ export default function ContactPage() {
                 <Icon name="external" size="sm" />
               </a>
 
-              <a className="crow" href={getEmailHref()}>
-                <span className="crow__icon">
-                  <Icon name="mail" size="sm" />
-                </span>
-                <span className="crow__main">
-                  <span className="crow__label">Email</span>
-                  <span className="crow__value">{getEmailLabel()}</span>
-                </span>
-                <Icon name="arrow" size="sm" />
-              </a>
+              <ContactChannelRow channel="email" label="Email" value={getEmailLabel()} />
             </div>
 
             <h2 className="h2 mt-8" style={{ fontSize: 24 }}>
@@ -120,7 +96,7 @@ export default function ContactPage() {
             <p className="note mt-4">
               <Icon name="info" size="sm" />
               <span>
-                Hours can change on holidays. Call or WhatsApp before travelling if you are unsure.
+                Hours can change on holidays. Check before travelling if you are unsure.
               </span>
             </p>
 
@@ -139,8 +115,8 @@ export default function ContactPage() {
             <span className="label">Enquiry form</span>
             <h2>Send your details</h2>
             <p className="lede">
-              Share your car, concern and preferred date. We will get back to confirm availability. No
-              payment is taken and no booking is confirmed automatically.
+              Share your car, concern and preferred date. No payment is taken and no booking is
+              confirmed automatically.
             </p>
             <Suspense fallback={<p className="form__note">Loading form...</p>}>
               <ContactFormClient />

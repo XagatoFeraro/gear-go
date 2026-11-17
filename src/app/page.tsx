@@ -1,27 +1,20 @@
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import EnquiryForm from "@/components/EnquiryForm";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import MapEmbed from "@/components/MapEmbed";
 import PhotoTile from "@/components/PhotoTile";
 import SectionHead from "@/components/SectionHead";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-  services,
-  serviceAreas,
-} from "@/data/business";
+import { business, getPhoneLabel, services, serviceAreas } from "@/data/business";
 import { photos } from "@/lib/photos";
 import { getFaqJsonLd } from "@/lib/seo";
 
 const homeFaqs = [
   {
     q: "How do I request a car service?",
-    a: "Message us on WhatsApp, call, or send the enquiry form with your car and concern. We will confirm availability and the next step directly. No online payment or automatic booking.",
+    a: "Send the enquiry form or use the contact options with your car and concern. No online payment or automatic booking.",
   },
   {
     q: "Do you provide an estimate before work?",
@@ -39,13 +32,6 @@ const homeFaqs = [
     q: "Do you offer pickup, drop-off, towing or insurance help?",
     a: `${business.policies.pickupDropoff} ${business.policies.towing} ${business.policies.insurance}`,
   },
-];
-
-const facts = [
-  ["All car brands", "Servicing and repairs for any make or model"],
-  ["Inspection first", "Findings checked before we recommend anything"],
-  ["Estimate before work", "You approve the scope and price first"],
-  ["Aya Nagar workshop", "Phase 4, H Block, behind Fitness Club Gym"],
 ];
 
 const featured = [
@@ -115,11 +101,6 @@ const whatsappMessage =
   "Hi Gear Go Automobiles, I need car service. My car is ____ and the issue/service needed is ____. My location is ____.";
 
 export default function Home() {
-  const whatsapp = getWhatsAppHref(whatsappMessage);
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
-
   return (
     <>
       <JsonLd data={getFaqJsonLd(homeFaqs)} />
@@ -134,12 +115,17 @@ export default function Home() {
               car, explain what it needs, and start only after you approve the estimate.
             </p>
             <div className="hero__actions">
-              <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+              <ChannelLink
+                channel="whatsapp"
+                message={whatsappMessage}
+                className="btn btn--primary"
+                fallback="Send an enquiry"
+              >
                 <Icon name="whatsapp" size="sm" /> WhatsApp us
-              </a>
-              <a className="btn btn--light" href={getPhoneHref()}>
+              </ChannelLink>
+              <ChannelLink channel="phone" className="btn btn--light" fallback="Contact options">
                 <Icon name="phone" size="sm" /> {getPhoneLabel()}
-              </a>
+              </ChannelLink>
               <a
                 className="btn btn--light"
                 href={business.maps.directionsUrl}
@@ -168,7 +154,7 @@ export default function Home() {
             <div className="form__head">
               <h2>Request a service</h2>
               <p className="hero__card-head-note">
-                We reply by phone or WhatsApp. No payment is taken online.
+                We will reply using the contact details you provide. No payment is taken online.
               </p>
             </div>
             <EnquiryForm variant="hero" />
@@ -176,16 +162,36 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="facts">
-        <div className="wrap facts__inner">
-          {facts.map(([k, v]) => (
-            <div className="facts__item" key={k}>
-              <span className="facts__k">{k}</span>
-              <span className="facts__v">{v}</span>
+      <section className="section section--paper">
+        <div className="wrap split split--wide">
+          <div>
+            <span className="label">Our workshop</span>
+            <h2 className="mt-3">Aya Nagar, New Delhi</h2>
+            <p className="lede mt-3">
+              {business.address.line1}, {business.address.line2}, {business.address.city}{" "}
+              {business.address.postalCode}.
+            </p>
+            <p className="muted mt-3">
+              Servicing and repairs for any make or model. We check the car, explain the findings,
+              and agree the scope and estimate before work starts.
+            </p>
+            <div className="mt-5">
+              <a
+                className="btn btn--outline"
+                href={business.maps.directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get directions <Icon name="arrow" size="sm" />
+              </a>
             </div>
-          ))}
+          </div>
+          <div className="workshop-panel">
+            <span className="workshop-panel__label">Workshop photo to be added</span>
+            <span className="workshop-panel__hint">Replacement slot: workshop-entry</span>
+          </div>
         </div>
-      </div>
+      </section>
 
       <section className="section">
         <div className="wrap">
@@ -212,7 +218,7 @@ export default function Home() {
             ))}
           </div>
           <p className="photo-note">
-            Illustrative images, not our workshop. They will be replaced with real Gear Go photos.
+            Photo slots for real Gear Go photos.
           </p>
         </div>
       </section>
@@ -243,9 +249,14 @@ export default function Home() {
               helps us tell you what the visit should cover before you travel.
             </p>
             <div className="aside-actions">
-              <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+              <ChannelLink
+                channel="whatsapp"
+                message={whatsappMessage}
+                className="btn btn--primary btn--block"
+                fallback="Send an enquiry"
+              >
                 <Icon name="whatsapp" size="sm" /> Ask on WhatsApp
-              </a>
+              </ChannelLink>
               <Link className="btn btn--outline btn--block" href="/book/">
                 Send an enquiry form
               </Link>
@@ -403,12 +414,17 @@ export default function Home() {
               })}
             </div>
             <div className="aside-actions">
-              <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+              <ChannelLink
+                channel="whatsapp"
+                message={whatsappMessage}
+                className="btn btn--primary btn--block"
+                fallback="Send an enquiry"
+              >
                 <Icon name="whatsapp" size="sm" /> WhatsApp now
-              </a>
-              <a className="btn btn--outline btn--block" href={getPhoneHref()}>
+              </ChannelLink>
+              <ChannelLink channel="phone" className="btn btn--outline btn--block" fallback="Contact options">
                 <Icon name="phone" size="sm" /> {getPhoneLabel()}
-              </a>
+              </ChannelLink>
               <Link className="btn btn--outline btn--block" href="/book/">
                 Send an enquiry form
               </Link>
@@ -423,9 +439,14 @@ export default function Home() {
         text="A message is enough to start. You will see the inspection findings and estimate before any paid work begins."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp us <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/book/">
               Request a service <Icon name="arrow" size="sm" />
             </Link>

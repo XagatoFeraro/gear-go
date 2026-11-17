@@ -2,19 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
+import ChannelLink from "@/components/ChannelLink";
 import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-  services,
-  serviceAreas,
-} from "@/data/business";
+import { business, getPhoneLabel, services, serviceAreas } from "@/data/business";
 import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, getFaqJsonLd, getServiceJsonLd, pageMetadata } from "@/lib/seo";
 
@@ -54,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const intent = intentKeywords[slug] ? ` ${intentKeywords[slug]}.` : "";
   return pageMetadata({
     title: `${service.name} in Aya Nagar, New Delhi`,
-    description: `${service.name} at ${business.name}, Aya Nagar, New Delhi. ${service.shortDescription} Call or WhatsApp to confirm availability.${intent}`,
+    description: `${service.name} at ${business.name}, Aya Nagar, New Delhi. ${service.shortDescription} ${intent}`,
     path: `/services/${slug}/`,
   });
 }
@@ -64,12 +57,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   const service = services.find((s) => s.slug === slug);
   if (!service) notFound();
 
-  const whatsapp = getWhatsAppHref(
-    `Hi Gear Go Automobiles, I need ${service.name} for my car (____). My location is ____. Concern: ____`,
-  );
-  const waAttrs = {
-    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
-  };
+  const whatsappMessage = `Hi Gear Go Automobiles, I need ${service.name} for my car (____). My location is ____. Concern: ____`;
 
   const related = services
     .filter((s) => s.group === service.group && s.slug !== service.slug)
@@ -80,7 +68,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   const faqs = [
     {
       q: `How do I enquire about ${service.name.toLowerCase()}?`,
-      a: `WhatsApp or call ${business.name} with your car make, model and concern. We will confirm availability and the next step. You can also send an enquiry form.`,
+      a: `Send an enquiry with your car make, model and concern, or use the contact details on the contact page. ${business.name} will reply directly.`,
     },
     {
       q: `What is the price for ${service.name.toLowerCase()}?`,
@@ -95,7 +83,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       a: `We are in Aya Nagar, New Delhi and serve nearby areas including ${serviceAreas
         .slice(0, 6)
         .map((a) => a.name)
-        .join(", ")} and more. Call or WhatsApp to confirm.`,
+        .join(", ")} and more.`,
     },
   ];
 
@@ -125,12 +113,17 @@ export default async function ServiceDetailPage({ params }: Props) {
         lede={service.shortDescription}
         actions={
           <>
-            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--primary"
+              fallback="Send an enquiry"
+            >
               WhatsApp about this <Icon name="whatsapp" size="sm" />
-            </a>
-            <a className="btn btn--light" href={getPhoneHref()}>
+            </ChannelLink>
+            <ChannelLink channel="phone" className="btn btn--light" fallback="Contact options">
               <Icon name="phone" size="sm" /> {getPhoneLabel()}
-            </a>
+            </ChannelLink>
             <Link
               className="btn btn--light"
               href={`/book/?service=${encodeURIComponent(service.name)}`}
@@ -196,7 +189,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <h2>How the visit works</h2>
             <div className="steps steps--compact-mobile mt-6">
               {[
-                ["Tell us the concern", "Share the car details and symptoms on WhatsApp or by form."],
+                ["Tell us the concern", "Send the car details and symptoms by form or through the contact options."],
                 ["Inspection", "We check the reported concern and the related systems."],
                 ["Estimate and approval", "Findings, options and price are shared. You approve before work."],
                 ["Service and handover", "The agreed work is completed and explained clearly."],
@@ -239,14 +232,19 @@ export default async function ServiceDetailPage({ params }: Props) {
           <aside className="aside">
             <div className="aside-card">
               <h3>Request this service</h3>
-              <p>Send the car details and concern. We will confirm availability and the next step.</p>
+              <p>Send the car details and concern. A person will reply directly.</p>
               <div className="aside-actions">
-                <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+                <ChannelLink
+                  channel="whatsapp"
+                  message={whatsappMessage}
+                  className="btn btn--primary btn--block"
+                  fallback="Send an enquiry"
+                >
                   <Icon name="whatsapp" size="sm" /> WhatsApp about this
-                </a>
-                <a className="btn btn--outline btn--block" href={getPhoneHref()}>
+                </ChannelLink>
+                <ChannelLink channel="phone" className="btn btn--outline btn--block" fallback="Contact options">
                   <Icon name="phone" size="sm" /> {getPhoneLabel()}
-                </a>
+                </ChannelLink>
                 <Link
                   className="btn btn--outline btn--block"
                   href={`/book/?service=${encodeURIComponent(service.name)}`}
@@ -322,12 +320,17 @@ export default async function ServiceDetailPage({ params }: Props) {
 
       <CtaBand
         title={`Need ${service.name.toLowerCase()}?`}
-        text="Start with a message. We will confirm availability, inspect the car, and share the scope and estimate before work."
+        text="Start with a message. We inspect the car, then share the scope and estimate before work."
         actions={
           <>
-            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
+            <ChannelLink
+              channel="whatsapp"
+              message={whatsappMessage}
+              className="btn btn--dark"
+              fallback="Send an enquiry"
+            >
               WhatsApp now <Icon name="whatsapp" size="sm" />
-            </a>
+            </ChannelLink>
             <Link className="btn btn--outline" href="/book/">
               Request service
             </Link>

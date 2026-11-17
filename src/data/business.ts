@@ -16,7 +16,7 @@ export const services: Service[] = [
     shortDescription: "Routine service with oil, filters, fluids and a multi-point safety check.",
     included: ["Engine oil and filter check/replacement (as approved)", "Fluid top-ups and inspection", "Multi-point safety and condition check", "Service recommendations shared before work"],
     signs: ["Service due by time or mileage", "Reduced smoothness or mileage", "It’s been a while since the last check"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Car Inspection",
@@ -25,7 +25,7 @@ export const services: Service[] = [
     shortDescription: "Condition check for peace of mind, pre-service or pre-purchase decisions.",
     included: ["Visual and functional inspection", "Key systems and safety points reviewed", "Findings explained in plain language", "Next steps recommended if needed"],
     signs: ["Buying a used car", "Planning a long trip", "Unsure about current condition"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Engine Diagnostics",
@@ -34,7 +34,7 @@ export const services: Service[] = [
     shortDescription: "Warning light and fault finding with scan and diagnosis.",
     included: ["Warning light and symptom assessment", "Diagnostic scan and fault checks", "Cause explained before repair", "Repair options shared for approval"],
     signs: ["Check engine or warning light on", "Poor performance or starting issues", "Unusual engine behaviour"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Mechanical Repairs",
@@ -43,7 +43,7 @@ export const services: Service[] = [
     shortDescription: "Repairs for noises, vibration, leaks and drivability concerns.",
     included: ["Inspection of reported concern", "Root-cause diagnosis", "Estimate shared before paid work", "Repair carried out after approval"],
     signs: ["New noises or vibration", "Leaks under the car", "Driving doesn’t feel right"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Brake & Suspension Checks",
@@ -52,7 +52,7 @@ export const services: Service[] = [
     shortDescription: "Safety-focused inspection of braking, steering and suspension.",
     included: ["Brake pads, discs and fluid check", "Steering and suspension inspection", "Safety findings explained clearly", "Replacement recommended only if needed and approved"],
     signs: ["Squealing or grinding brakes", "Soft or vibrating brake pedal", "Bumpy ride or pulling"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Suspension & Fitments",
@@ -61,7 +61,7 @@ export const services: Service[] = [
     shortDescription: "Suspension wear, fitment and related alignment concerns.",
     included: ["Suspension components inspected for wear/play", "Fitment-related issues checked", "Alignment-related concerns assessed", "Options shared before work"],
     signs: ["Uneven tyre wear", "Clunks over bumps", "Car sits unevenly"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Clutch & Body Parts",
@@ -70,7 +70,7 @@ export const services: Service[] = [
     shortDescription: "Clutch operation concerns and body panel part repairs/replacement.",
     included: ["Clutch operation assessed", "Affected body parts inspected", "Repair or replacement options explained", "Work done after approval"],
     signs: ["Slipping or hard clutch", "Difficulty shifting", "Damaged or loose body parts"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Electrical Repairs",
@@ -79,7 +79,7 @@ export const services: Service[] = [
     shortDescription: "Battery, starting, charging, wiring and lighting fault diagnosis.",
     included: ["Electrical symptom diagnosis", "Starting/charging/wiring checks as relevant", "Faults explained with options", "Repairs after approval"],
     signs: ["Starting trouble", "Lights or accessories not working", "Blown fuses or intermittent faults"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Battery Service",
@@ -88,7 +88,7 @@ export const services: Service[] = [
     shortDescription: "Battery health test, terminals, jump-start help and replacement guidance.",
     included: ["Battery health and charging check", "Terminal inspection/cleaning as needed", "Replacement options if required", "Fitment after approval"],
     signs: ["Slow or no crank", "Battery warning light", "Old or weak battery"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Tyres & Wheel Care",
@@ -97,7 +97,7 @@ export const services: Service[] = [
     shortDescription: "Tyre condition, pressure, damage checks and wheel care.",
     included: ["Tread, pressure and damage inspection", "Wheel and balance/alignment concerns assessed", "Recommendations explained", "Work after approval"],
     signs: ["Low tread or punctures", "Vibration at speed", "Uneven wear"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "AC Service & Repair",
@@ -106,7 +106,7 @@ export const services: Service[] = [
     shortDescription: "Cooling performance checks, leak inspection and AC repairs.",
     included: ["Cooling performance assessment", "Leak and component inspection", "Gas/cabin filter needs checked (as applicable)", "Estimate before repair"],
     signs: ["AC not cooling", "Bad odour from vents", "Weak airflow or unusual noise"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Car Spa & Cleaning",
@@ -115,7 +115,7 @@ export const services: Service[] = [
     shortDescription: "Exterior wash, wheels, glass and quick interior refresh.",
     included: ["Exterior wash and dry", "Wheels and glass cleaned", "Basic interior vacuum/refresh (as applicable)", "Scope confirmed on arrival"],
     signs: ["Car needs a thorough clean", "Dusty interior or dull exterior", "Pre-event or routine refresh"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Interior Cleaning",
@@ -124,7 +124,7 @@ export const services: Service[] = [
     shortDescription: "Seats, carpets, panels and vents cleaned for a fresher cabin.",
     included: ["Seats, carpets and mats cleaned (as applicable)", "Panels, glass and vents attended", "Condition assessed before work", "Scope confirmed before start"],
     signs: ["Stains or odours inside", "Dusty vents and panels", "Cabin needs deep refresh"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Detailing Services",
@@ -133,7 +133,7 @@ export const services: Service[] = [
     shortDescription: "Decontamination, polish and finish enhancement for appearance.",
     included: ["Surface condition assessment", "Cleaning/decontamination as agreed", "Polish/finish work as applicable", "Results and care advice shared"],
     signs: ["Dull paint or swirl marks", "Wanting enhanced finish", "Preparing car for sale/event"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Denting & Painting",
@@ -142,7 +142,7 @@ export const services: Service[] = [
     shortDescription: "Panel repair and paint work matched to the vehicle’s finish.",
     included: ["Damage assessed and scope defined", "Panel repair/denting as required", "Paint and finish work as agreed", "Estimate shared before work"],
     signs: ["Dents, scratches or paint damage", "Minor collision marks", "Panels needing cosmetic repair"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Accidental Damage Inspection",
@@ -151,7 +151,7 @@ export const services: Service[] = [
     shortDescription: "Damage documentation, safety check and repair scope after an incident.",
     included: ["Visible damage and safety check", "Repair scope documented", "Findings explained clearly", "Next steps/estimate guidance shared"],
     signs: ["After a minor or major accident", "Unsure if damage is only cosmetic", "Need clarity before repair decisions"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Insurance Claims",
@@ -160,7 +160,7 @@ export const services: Service[] = [
     shortDescription: "Insurance claim coordination support (availability/details to be confirmed).",
     included: ["Damage assessment support", "Coordination guidance for claim process", "Documentation/photos as applicable", "Repair scope discussed with you"],
     signs: ["Accident-related repair", "Need help understanding claim steps", "Insurer requires inspection/estimate"],
-    priceNote: "Coordination available; claim approval remains with the insurer. Call or WhatsApp to confirm process.",
+    priceNote: "Coordination available; claim approval remains with the insurer.",
   },
   {
     name: "Windshield & Lights",
@@ -169,7 +169,7 @@ export const services: Service[] = [
     shortDescription: "Windshield/glass damage and lighting system assessment.",
     included: ["Glass damage assessed", "Lighting condition checked", "Repair/replacement options explained", "Work after approval"],
     signs: ["Chipped or cracked glass", "Dim, broken or misaligned lights", "Visibility concerns"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Lights & Replacement",
@@ -178,7 +178,7 @@ export const services: Service[] = [
     shortDescription: "Lighting faults diagnosed and bulbs/units replaced as needed.",
     included: ["Lighting fault diagnosis", "Bulb/unit condition checked", "Replacement options shared", "Fitment after approval"],
     signs: ["Headlight/taillight not working", "Flickering or dim lights", "Warning indicator for lights"],
-    priceNote: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    priceNote: "Price confirmed after inspection.",
   },
   {
     name: "Custom Repair",
@@ -187,7 +187,7 @@ export const services: Service[] = [
     shortDescription: "Non-standard or modified vehicle concerns assessed case by case.",
     included: ["Concern discussed and inspected", "Feasibility and scope assessed", "Estimate/options shared before work", "Work undertaken only if agreed"],
     signs: ["Modified/custom vehicle issue", "Unusual repair requirement", "Needs case-by-case assessment"],
-    priceNote: "Assessed case by case. Call or WhatsApp to discuss your requirement.",
+    priceNote: "Assessed case by case.",
   },
 ];
 
@@ -217,7 +217,7 @@ export const serviceAreas = [
     name: "Saket",
     slug: "saket",
     context:
-      "From Saket, the workshop is a straightforward visit for scheduled maintenance, detailing or bodywork. Call ahead so we can confirm availability and timing.",
+      "From Saket, the workshop is a straightforward visit for scheduled maintenance, detailing or bodywork.",
     focus: ["periodic-car-service", "detailing-services", "denting-painting"],
   },
   {
@@ -257,6 +257,38 @@ export const serviceAreas = [
   },
 ];
 
+/** Public config only — phone/email/WhatsApp are public business details, never secrets. */
+function fromEnv(key: string, fallback: string) {
+  const value = process.env[key];
+  return value && value.trim() ? value.trim() : fallback;
+}
+
+const hoursFromEnv = fromEnv("NEXT_PUBLIC_BUSINESS_HOURS", "");
+const hoursConfigured = Boolean(hoursFromEnv);
+export const hoursDisplay: readonly string[] = hoursConfigured
+  ? hoursFromEnv.split("|").map((row) => row.trim()).filter(Boolean)
+  : ["Hours: Confirm when you enquire"];
+
+export function getHoursText() {
+  return hoursConfigured ? hoursDisplay.join("; ") : "Confirm hours when you enquire";
+}
+
+type OpeningHours = { dayOfWeek: string[]; opens: string; closes: string };
+function parseStructuredHours(raw: string): OpeningHours[] {
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is OpeningHours => {
+      if (!item || typeof item !== "object") return false;
+      const row = item as Partial<OpeningHours>;
+      return Array.isArray(row.dayOfWeek) && typeof row.opens === "string" && typeof row.closes === "string";
+    });
+  } catch {
+    return [];
+  }
+}
+
 export const business = {
   name: "Gear Go Automobiles",
   legalName: "{{LEGAL_ENTITY_NAME}}",
@@ -273,38 +305,36 @@ export const business = {
     country: "IN",
     full: "Phase 4, H Block, Aya Nagar, behind Fitness Club Gym, New Delhi, Delhi 110047",
   },
-  parkingNote: "{{PARKING_NOTE}}",
+  parkingNote: fromEnv("NEXT_PUBLIC_PARKING_NOTE", "{{PARKING_NOTE}}"),
   geo: { latitude: "{{LATITUDE}}", longitude: "{{LONGITUDE}}" },
   phone: {
-    display: "{{PHONE}}",
-    e164: "{{PHONE_E164}}",
-    telHref: "tel:{{PHONE_E164}}",
+    display: fromEnv("NEXT_PUBLIC_PHONE_DISPLAY", "{{PHONE}}"),
+    e164: fromEnv("NEXT_PUBLIC_PHONE_E164", "{{PHONE_E164}}"),
   },
   whatsapp: {
-    display: "{{WHATSAPP}}",
-    e164: "{{WHATSAPP_E164}}",
-    url: "https://wa.me/{{WHATSAPP_E164_NO_PLUS}}",
+    display: fromEnv("NEXT_PUBLIC_WHATSAPP_DISPLAY", "{{WHATSAPP}}"),
+    e164: fromEnv("NEXT_PUBLIC_WHATSAPP_E164", "{{WHATSAPP_E164}}"),
   },
-  email: "{{EMAIL}}",
+  email: fromEnv("NEXT_PUBLIC_EMAIL", "{{EMAIL}}"),
   hours: {
-    display: ["Mon–Fri: 09:00–19:00", "Sat: 09:00–17:00", "Sun: Closed"],
-    note: "{{HOLIDAY_NOTE}}",
-    openingHoursSpecification: [
-      { dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
-      { dayOfWeek: ["Saturday"], opens: "09:00", closes: "17:00" },
-    ],
+    display: hoursDisplay,
+    note: fromEnv("NEXT_PUBLIC_HOLIDAY_NOTE", "{{HOLIDAY_NOTE}}"),
+    // Only publish structured hours when the owner supplies them explicitly.
+    openingHoursSpecification: parseStructuredHours(fromEnv("NEXT_PUBLIC_OPENING_HOURS_JSON", "")),
   },
   maps: {
-    placeUrl: "{{GOOGLE_MAPS_URL}}",
-    directionsUrl:
+    placeUrl: fromEnv("NEXT_PUBLIC_GOOGLE_MAPS_URL", "{{GOOGLE_MAPS_URL}}"),
+    directionsUrl: fromEnv(
+      "NEXT_PUBLIC_DIRECTIONS_URL",
       "https://www.google.com/maps/dir/?api=1&destination=Gear+Go+Automobiles+Phase+4+H+Block+Aya+Nagar+New+Delhi+110047",
-    embedUrl: "{{GOOGLE_MAPS_EMBED_URL}}",
+    ),
+    embedUrl: fromEnv("NEXT_PUBLIC_GOOGLE_MAPS_EMBED_URL", "{{GOOGLE_MAPS_EMBED_URL}}"),
   },
   profiles: {
-    googleBusiness: "{{GBP_URL}}",
-    instagram: "{{INSTAGRAM_URL}}",
-    facebook: "{{FACEBOOK_URL}}",
-    youtube: "{{YOUTUBE_URL}}",
+    googleBusiness: fromEnv("NEXT_PUBLIC_GBP_URL", "{{GBP_URL}}"),
+    instagram: fromEnv("NEXT_PUBLIC_INSTAGRAM_URL", "{{INSTAGRAM_URL}}"),
+    facebook: fromEnv("NEXT_PUBLIC_FACEBOOK_URL", "{{FACEBOOK_URL}}"),
+    youtube: fromEnv("NEXT_PUBLIC_YOUTUBE_URL", "{{YOUTUBE_URL}}"),
   },
   domain: "{{DOMAIN}}",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://{{DOMAIN}}",
@@ -313,19 +343,18 @@ export const business = {
     showPublicly: false,
   },
   establishedYear: "{{ESTABLISHED_YEAR}}",
-  brandsServicedNote: "All car brands and models serviced. Call or WhatsApp to confirm your vehicle.",
+  brandsServicedNote: "All car brands and models serviced.",
   policies: {
     parts:
       "Parts options are explained and priced before fitment. Any part proposed is shared for your approval first.",
     warranty:
       "Ask about current warranty terms, coverage and exclusions before work begins.",
     pickupDropoff:
-      "Pickup and drop-off can be arranged. Call or WhatsApp to confirm coverage, timing and charges for your location.",
-    towing:
-      "Towing can be arranged. Call or WhatsApp to confirm coverage, timing and charges.",
+      "Ask about pickup and drop-off, including coverage, timing and charges for your location.",
+    towing: "Ask about towing, including coverage, timing and charges.",
     insurance:
       "Insurance claim coordination can be discussed. Claim approval and coverage decisions remain with the insurer.",
-    pricing: "Price confirmed after inspection. Call or WhatsApp for a current estimate.",
+    pricing: "Price is confirmed after inspection.",
   },
   trustHighlights: [
     "All car brands & models",
@@ -334,9 +363,9 @@ export const business = {
     "Ask about current warranty terms",
   ],
   form: {
-    // Confirm operator destination/provider (email + Formspree/Web3Forms dashboard, or Google Sheet, etc.)
-    provider: "{{FORM_PROVIDER}}",
-    endpoint: "{{FORM_ENDPOINT}}",
+    // Public form key/provider only (e.g. Formspree/Web3Forms endpoint). Never a secret.
+    provider: fromEnv("NEXT_PUBLIC_FORM_PROVIDER", "{{FORM_PROVIDER}}"),
+    endpoint: fromEnv("NEXT_PUBLIC_FORM_ENDPOINT", "{{FORM_ENDPOINT}}"),
     operatorNote: "Submissions must reach the operator (email/dashboard/sheet) once configured.",
   },
   services,
@@ -362,34 +391,71 @@ export function isExternalUrl(url: string) {
   return /^https?:\/\//.test(url);
 }
 
-export function getPhoneHref() {
-  return isPlaceholder(business.phone.e164) ? withBasePath("/contact/") : business.phone.telHref;
+export type Channel = "whatsapp" | "phone" | "email";
+
+export function isPhoneConfigured() {
+  return !isPlaceholder(business.phone.e164);
+}
+
+export function isWhatsAppConfigured() {
+  return !isPlaceholder(business.whatsapp.e164);
+}
+
+export function isEmailConfigured() {
+  return !isPlaceholder(business.email);
+}
+
+export function isChannelConfigured(channel: Channel) {
+  return channel === "whatsapp"
+    ? isWhatsAppConfigured()
+    : channel === "phone"
+      ? isPhoneConfigured()
+      : isEmailConfigured();
+}
+
+export function hasFormEndpoint() {
+  const endpoint = business.form.endpoint;
+  return Boolean(endpoint) && !isPlaceholder(endpoint) && isExternalUrl(endpoint);
+}
+
+/** Returns null when the channel is not configured. Never silently routes to another page. */
+export function getPhoneHref(): string | null {
+  return isPhoneConfigured() ? `tel:${business.phone.e164}` : null;
 }
 
 export function getPhoneLabel() {
-  return isPlaceholder(business.phone.display) ? "Contact us" : business.phone.display;
+  if (!isPlaceholder(business.phone.display)) return business.phone.display;
+  return isPhoneConfigured() ? business.phone.e164 : "Contact us";
 }
 
-export function getWhatsAppUrl(message: string) {
-  const base = business.whatsapp.url;
-  if (isPlaceholder(base)) return withBasePath("/contact/");
-  return `${base}?text=${encodeURIComponent(message)}`;
+export function getWhatsAppUrl(message?: string): string | null {
+  if (!isWhatsAppConfigured()) return null;
+  const base = `https://wa.me/${business.whatsapp.e164.replace(/[^\d]/g, "")}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-export function getWhatsAppHref(message?: string) {
-  return message
-    ? getWhatsAppUrl(message)
-    : isPlaceholder(business.whatsapp.url)
-      ? withBasePath("/contact/")
-      : business.whatsapp.url;
+export const getWhatsAppHref = getWhatsAppUrl;
+
+export function getWhatsAppLabel() {
+  if (!isPlaceholder(business.whatsapp.display)) return business.whatsapp.display;
+  return isWhatsAppConfigured() ? business.whatsapp.e164 : "WhatsApp";
 }
 
 export function getEmailLabel() {
-  return isPlaceholder(business.email) ? "Send an enquiry" : business.email;
+  return isEmailConfigured() ? business.email : "Send an enquiry";
 }
 
-export function getEmailHref() {
-  return isPlaceholder(business.email) ? withBasePath("/contact/") : `mailto:${business.email}`;
+/** Returns null when the channel is not configured. */
+export function getEmailHref(): string | null {
+  return isEmailConfigured() ? `mailto:${business.email}` : null;
+}
+
+export function getChannelHref(channel: Channel, message?: string): string | null {
+  return channel === "whatsapp"
+    ? getWhatsAppUrl(message)
+    : channel === "phone"
+      ? getPhoneHref()
+      : getEmailHref();
 }
 
 export function getDirectionsHref() {

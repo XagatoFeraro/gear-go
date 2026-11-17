@@ -4,11 +4,11 @@ This site is a static export (`images.unoptimized: true`), so every image in `pu
 
 ## Current status
 
-All 12 photo slots are **illustrative placeholders**, not photographs of the Gear Go workshop. Each one is captioned on the page so a visitor is never misled. The captions stay until a real Gear Go photo replaces the placeholder.
+All 12 photo slots are **unfilled placeholders**, not photographs of the Gear Go workshop. The UI renders flat labelled panels ("Photo to be added" plus the slot id) instead of AI-generated or illustrative imagery. Each slot carries a caption so a visitor is never misled. Panels and captions stay until a real Gear Go photo replaces the slot.
 
-`src/lib/photos.ts` is the single source of truth for slots, alt text, captions, sizes and widths. Set `placeholder: false` on a slot only after a real photo of that subject is in place.
+`src/lib/photos.ts` is the single source of truth for slots, alt text, captions, sizes and widths. Set `placeholder: false` on a slot only after a real photo of that subject is in place. The pre-sized files in `public/images/` are retained for the replacement workflow but are not rendered while `placeholder: true`.
 
-Illustrative images must **never** be used for:
+Placeholder or illustrative imagery must **never** be used for:
 
 - the owner, team or staff portraits
 - before/after comparisons
@@ -82,4 +82,4 @@ The repository does not keep originals. Keep them in the owner's own storage, no
 
 - No image may contain invented signage, certifications, awards or prices.
 - Do not add `aggregateRating` or review markup based on photos.
-- Keep total image weight lean. The current placeholder set is about 6.8 MB across 60 files; a real set should aim to stay near that or lower.
+- Placeholder panels load zero image bytes. Keep the eventual real-image set lean (target roughly 6–7 MB or lower across all slots).

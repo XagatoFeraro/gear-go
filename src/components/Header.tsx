@@ -3,15 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import ChannelLink from "@/components/ChannelLink";
 import Icon from "@/components/Icon";
-import {
-  business,
-  getPhoneHref,
-  getPhoneLabel,
-  getWhatsAppHref,
-  isExternalUrl,
-  isPlaceholder,
-} from "@/data/business";
+import { business, getPhoneLabel } from "@/data/business";
 
 const nav = [
   { href: "/services/", label: "Services" },
@@ -33,7 +27,7 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
   const [solid, setSolid] = useState(false);
-  const whatsapp = getWhatsAppHref("Hi Gear Go Automobiles, I need help with my car.");
+  const whatsappMessage = "Hi Gear Go Automobiles, I need help with my car.";
 
   const path =
     basePath && pathname.startsWith(basePath)
@@ -117,19 +111,19 @@ export default function Header() {
         </nav>
 
         <div className="header__actions">
-          <a className="header__phone" href={getPhoneHref()}>
+          <ChannelLink channel="phone" className="header__phone" fallback="Contact">
             <Icon name="phone" size="sm" />
-            <span>{isPlaceholder(business.phone.display) ? "Contact" : getPhoneLabel()}</span>
-          </a>
-          <a
+            <span>{getPhoneLabel()}</span>
+          </ChannelLink>
+          <ChannelLink
+            channel="whatsapp"
+            message={whatsappMessage}
             className="btn btn--primary btn--sm"
-            href={whatsapp}
-            target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-            rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            fallback="Enquire"
           >
             <Icon name="whatsapp" size="sm" />
             <span className="header__wa-text">WhatsApp</span>
-          </a>
+          </ChannelLink>
           <button
             ref={toggleRef}
             type="button"
@@ -190,19 +184,23 @@ export default function Header() {
         </nav>
 
         <div className="mobile-menu__actions">
-          <a
+          <ChannelLink
+            channel="whatsapp"
+            message={whatsappMessage}
             className="btn btn--primary btn--block"
-            href={whatsapp}
-            target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-            rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
+            fallback="Send an enquiry"
             onClick={closeMenu}
           >
             <Icon name="whatsapp" size="sm" /> WhatsApp us
-          </a>
-          <a className="btn btn--outline btn--block" href={getPhoneHref()} onClick={closeMenu}>
-            <Icon name="phone" size="sm" />
-            {isPlaceholder(business.phone.display) ? "Contact us" : `Call ${getPhoneLabel()}`}
-          </a>
+          </ChannelLink>
+          <ChannelLink
+            channel="phone"
+            className="btn btn--outline btn--block"
+            fallback="Contact us"
+            onClick={closeMenu}
+          >
+            <Icon name="phone" size="sm" /> Call {getPhoneLabel()}
+          </ChannelLink>
           <Link className="btn btn--outline btn--block" href="/contact/" onClick={closeMenu}>
             Address &amp; directions
           </Link>
