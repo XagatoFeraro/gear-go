@@ -38,7 +38,7 @@ function photo(
 }
 
 export const photos = {
-  /** Wide 21:9 band. Car raised on a lift in a workshop bay. */
+  /** Car raised on a lift in a workshop bay. Cropped to 3:2 where used. */
   bandLift: photo(
     "band-lift",
     "A car raised on a lift inside a workshop bay, with a mechanic working nearby",

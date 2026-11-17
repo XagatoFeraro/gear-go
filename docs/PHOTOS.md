@@ -22,7 +22,7 @@ Each slot ships as `<slot>-<width>.jpg` (quality 78) and `<slot>-<width>.webp` (
 
 | Slot | Current files (widths) | Intended real photo |
 | --- | --- | --- |
-| `band-lift` | 1200, 1800 | Wide 21:9 shot of a car raised on a lift inside the workshop, mechanic in frame. Home page band. |
+| `band-lift` | 1200, 1800 | 3:2 shot of a car raised on a lift inside the workshop, mechanic in frame. Used as the supporting image on the service-areas page. |
 | `engine-bay` | 800, 1200 | 3:2 shot over an open engine bay while work is happening. Used on services and area pages. |
 | `tile-periodic` | 800, 1200, 1600 | 16:10 shot of a car in a service bay, bonnet up or on a lift. |
 | `tile-brakes` | 800, 1200, 1600 | 16:10 close shot of a wheel and brake assembly being checked. |

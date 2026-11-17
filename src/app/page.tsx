@@ -1,7 +1,6 @@
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
 import EnquiryForm from "@/components/EnquiryForm";
-import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import MapEmbed from "@/components/MapEmbed";
@@ -186,10 +185,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="bleed" style={{ paddingTop: 40 }}>
-        <Figure photo={photos.bandLift} className="photo--band" sizes="100vw" />
       </div>
 
       <section className="section">
