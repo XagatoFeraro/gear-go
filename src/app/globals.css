@@ -554,11 +554,22 @@ table {
    -------------------------------------------------------------------------- */
 
 .site-header {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: 80;
-  background: var(--paper);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.site-header--solid {
+  background: rgba(247, 246, 240, 0.94);
+  border-bottom-color: var(--line);
+  box-shadow: 0 4px 20px rgba(20, 24, 19, 0.05);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
 .site-header__inner {
@@ -580,7 +591,7 @@ table {
   font-size: 21px;
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--ink);
+  color: var(--white);
 }
 
 .brand__sub {
@@ -588,6 +599,14 @@ table {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.site-header--solid .brand__name {
+  color: var(--ink);
+}
+
+.site-header--solid .brand__sub {
   color: var(--muted);
 }
 
@@ -601,16 +620,30 @@ table {
   padding: 6px 0;
   font-size: 14px;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: rgba(255, 255, 255, 0.76);
   border-bottom: 2px solid transparent;
 }
 
 .nav a:hover {
+  color: var(--white);
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--lime);
+  border-bottom-color: var(--lime);
+}
+
+.site-header--solid .nav a {
+  color: var(--ink-soft);
+}
+
+.site-header--solid .nav a:hover {
   color: var(--ink);
   border-bottom-color: var(--line-strong);
 }
 
-.nav a[aria-current="page"] {
+.site-header--solid .nav a[aria-current="page"] {
   color: var(--ink);
   border-bottom-color: var(--ink);
 }
@@ -627,10 +660,18 @@ table {
   gap: 6px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--ink-soft);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .header__phone:hover {
+  color: var(--white);
+}
+
+.site-header--solid .header__phone {
+  color: var(--ink-soft);
+}
+
+.site-header--solid .header__phone:hover {
   color: var(--ink);
 }
 
@@ -640,9 +681,14 @@ table {
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid rgba(255, 255, 255, 0.34);
   border-radius: var(--radius);
   background: transparent;
+  color: var(--white);
+}
+
+.site-header--solid .menu-btn {
+  border-color: var(--line-strong);
   color: var(--ink);
 }
 
@@ -713,7 +759,7 @@ table {
 
 .page-head {
   position: relative;
-  padding: 36px 0 44px;
+  padding: calc(var(--header-h) + 36px) 0 44px;
   background: var(--night);
   color: var(--white);
 }
@@ -787,6 +833,7 @@ table {
    -------------------------------------------------------------------------- */
 
 .hero {
+  padding-top: var(--header-h);
   background: var(--night);
   color: var(--white);
 }
@@ -1978,7 +2025,7 @@ table {
    -------------------------------------------------------------------------- */
 
 .notfound {
-  padding: 96px 0 110px;
+  padding: calc(var(--header-h) + 96px) 0 110px;
   background: var(--night);
   color: var(--white);
 }
@@ -2186,7 +2233,7 @@ table {
   }
 
   .page-head {
-    padding: 28px 0 34px;
+    padding: calc(var(--header-h) + 28px) 0 34px;
   }
 
   .page-head h1 {

@@ -32,12 +32,25 @@ export default function Header() {
   const closeRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  const [solid, setSolid] = useState(false);
   const whatsapp = getWhatsAppHref("Hi Gear Go Automobiles, I need help with my car.");
 
   const path =
     basePath && pathname.startsWith(basePath)
       ? pathname.slice(basePath.length) || "/"
       : pathname;
+
+  useEffect(() => {
+    const update = () => {
+      const hasDarkHero = Boolean(
+        document.querySelector("main .hero, main .page-head, main .notfound"),
+      );
+      setSolid(window.scrollY > 24 || !hasDarkHero);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -84,7 +97,7 @@ export default function Header() {
   };
 
   return (
-    <header className="site-header">
+    <header className={`site-header${solid ? " site-header--solid" : ""}`}>
       <div className="wrap site-header__inner">
         <Link href="/" className="brand" aria-label={`${business.name} home`}>
           <span className="brand__name">Gear Go</span>
