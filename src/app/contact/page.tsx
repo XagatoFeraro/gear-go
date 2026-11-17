@@ -4,13 +4,12 @@ import { Suspense } from "react";
 import ContactFormClient from "@/components/ContactFormClient";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import MapArt from "@/components/MapArt";
+import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
 import {
   business,
   getEmailHref,
   getEmailLabel,
-  getMapEmbedUrl,
   getPhoneHref,
   getPhoneLabel,
   getWhatsAppHref,
@@ -29,7 +28,9 @@ const whatsappMessage =
 
 export default function ContactPage() {
   const whatsapp = getWhatsAppHref(whatsappMessage);
-  const mapEmbed = getMapEmbedUrl();
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
 
   return (
     <>
@@ -42,110 +43,90 @@ export default function ContactPage() {
 
       <PageHero
         compact
-        eyebrow="Contact"
+        label="Contact"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Contact" }]}
-        title={
-          <>
-            Talk to the garage <em>directly.</em>
-          </>
-        }
-        lede="Fastest response on WhatsApp. You can also call, get directions, or send an enquiry form — we’ll confirm availability and next steps."
+        title="Talk to the garage directly"
+        lede="Fastest response on WhatsApp. You can also call, get directions, or send an enquiry form. We will confirm availability and the next step."
       />
 
       <section className="section">
-        <div className="container contact-grid">
+        <div className="wrap split split--wide">
           <div>
-            <div className="contact-methods">
-              <a
-                className="contact-method contact-method-primary"
-                href={whatsapp}
-                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-              >
-                <span className="icon-box">
-                  <Icon name="whatsapp" />
+            <div className="contact-rows">
+              <a className="crow" href={whatsapp} {...waAttrs}>
+                <span className="crow__icon">
+                  <Icon name="whatsapp" size="sm" />
                 </span>
-                <div>
-                  <strong>WhatsApp</strong>
-                  <span>Fastest for questions, photos and prefilled enquiries.</span>
-                </div>
+                <span className="crow__main">
+                  <span className="crow__label">WhatsApp</span>
+                  <span className="crow__value">Fastest for questions, photos and enquiries</span>
+                </span>
                 <Icon name="arrow" size="sm" />
               </a>
 
-              <a className="contact-method" href={getPhoneHref()}>
-                <span className="icon-box">
-                  <Icon name="phone" />
+              <a className="crow" href={getPhoneHref()}>
+                <span className="crow__icon">
+                  <Icon name="phone" size="sm" />
                 </span>
-                <div>
-                  <strong>{getPhoneLabel()}</strong>
-                  <span>Call during workshop hours to confirm availability.</span>
-                </div>
+                <span className="crow__main">
+                  <span className="crow__label">Phone</span>
+                  <span className="crow__value">{getPhoneLabel()}</span>
+                </span>
                 <Icon name="arrow" size="sm" />
               </a>
 
               <a
-                className="contact-method"
+                className="crow"
                 href={business.maps.directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span className="icon-box">
-                  <Icon name="pin" />
+                <span className="crow__icon">
+                  <Icon name="pin" size="sm" />
                 </span>
-                <div>
-                  <strong>Directions</strong>
-                  <span>{business.address.full}</span>
-                </div>
+                <span className="crow__main">
+                  <span className="crow__label">Directions</span>
+                  <span className="crow__value">{business.address.full}</span>
+                </span>
                 <Icon name="external" size="sm" />
               </a>
 
-              <a className="contact-method" href={getEmailHref()}>
-                <span className="icon-box">
-                  <Icon name="mail" />
+              <a className="crow" href={getEmailHref()}>
+                <span className="crow__icon">
+                  <Icon name="mail" size="sm" />
                 </span>
-                <div>
-                  <strong>{getEmailLabel()}</strong>
-                  <span>For enquiries that aren’t urgent.</span>
-                </div>
+                <span className="crow__main">
+                  <span className="crow__label">Email</span>
+                  <span className="crow__value">{getEmailLabel()}</span>
+                </span>
                 <Icon name="arrow" size="sm" />
               </a>
             </div>
 
-            <div className="hours-card">
-              <span className="eyebrow">Workshop hours</span>
-              <div className="hours-grid">
-                {business.hours.display.map((row) => {
-                  const [day, time] = row.split(": ").length > 1 ? [row.split(": ")[0], row.split(": ").slice(1).join(": ")] : [row, ""];
-                  return (
-                    <div className="hours-row" key={row}>
-                      <strong>{day}</strong>
-                      <span>{time}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="inline-note mt-4">
-                <Icon name="info" size="sm" />
-                <span>
-                  Hours can change on holidays. Call or WhatsApp before travelling if you’re unsure.
-                </span>
-              </p>
+            <h2 className="h2 mt-8" style={{ fontSize: 24 }}>
+              Workshop hours
+            </h2>
+            <div className="hours">
+              {business.hours.display.map((row) => {
+                const [day, ...rest] = row.split(": ");
+                return (
+                  <div className="hours__row" key={row}>
+                    <strong>{day}</strong>
+                    <span>{rest.join(": ")}</span>
+                  </div>
+                );
+              })}
             </div>
+            <p className="note mt-4">
+              <Icon name="info" size="sm" />
+              <span>
+                Hours can change on holidays. Call or WhatsApp before travelling if you are unsure.
+              </span>
+            </p>
 
-            <div className="mt-6">
-              <MapArt />
+            <div className="mt-8">
+              <MapEmbed title="Gear Go Automobiles location in Aya Nagar, New Delhi" />
             </div>
-
-            {mapEmbed ? (
-              <div className="map-embed">
-                <iframe
-                  title={`${business.name} location map`}
-                  src={mapEmbed}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-              </div>
-            ) : null}
 
             <p className="mt-4">
               <Link className="text-link" href="/service-areas/">
@@ -154,14 +135,14 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="contact-panel" id="enquiry">
-            <span className="badge badge-lime no-dot">Enquiry form</span>
+          <div className="form-panel" id="enquiry">
+            <span className="label">Enquiry form</span>
             <h2>Send your details</h2>
-            <p className="section-lede">
-              Share your car, concern and preferred date. We’ll get back to confirm availability. No
+            <p className="lede">
+              Share your car, concern and preferred date. We will get back to confirm availability. No
               payment is taken and no booking is confirmed automatically.
             </p>
-            <Suspense fallback={<p className="form-note">Loading form…</p>}>
+            <Suspense fallback={<p className="form__note">Loading form...</p>}>
               <ContactFormClient />
             </Suspense>
           </div>

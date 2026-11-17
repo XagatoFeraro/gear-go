@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import MapArt from "@/components/MapArt";
+import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
+import SectionHead from "@/components/SectionHead";
 import {
   business,
+  getPhoneHref,
+  getPhoneLabel,
   getWhatsAppHref,
   isExternalUrl,
   serviceAreas,
 } from "@/data/business";
+import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -24,6 +29,9 @@ const whatsappMessage =
 
 export default function AreasPage() {
   const whatsapp = getWhatsAppHref(whatsappMessage);
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
 
   return (
     <>
@@ -35,26 +43,17 @@ export default function AreasPage() {
       />
 
       <PageHero
-        eyebrow="Service areas"
+        label="Service areas"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Service areas" }]}
-        title={
-          <>
-            Rooted in Aya Nagar. <em>Connected across NCR.</em>
-          </>
-        }
-        lede={`Our workshop is in ${business.address.locality}, ${business.address.city}. Car owners from nearby South Delhi and NCR localities visit us for servicing, repairs, car wash and dent removal.`}
+        title="Car service near Aya Nagar"
+        lede="One workshop in Phase 4, H Block, Aya Nagar. Car owners come to us from across South Delhi and NCR because the inspection, scope and estimate happen before any paid work."
         actions={
           <>
-            <a
-              className="btn btn-lime"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
               Confirm your area <Icon name="whatsapp" size="sm" />
             </a>
             <a
-              className="btn btn-outline-light"
+              className="btn btn--light"
               href={business.maps.directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -66,105 +65,125 @@ export default function AreasPage() {
       />
 
       <section className="section">
-        <div className="container split split-map">
+        <div className="wrap split split--wide">
           <div>
-            <span className="eyebrow">Find us</span>
-            <h2 className="section-title">One workshop, easy to reach from South Delhi &amp; NCR</h2>
-            <p className="section-lede">
-              We’re in Phase 4, H Block, Aya Nagar, behind Fitness Club Gym. Use directions for the
-              current route and travel time from your location.
-            </p>
-            <div className="visit-row">
-              <Icon name="pin" />
-              <div>
-                <strong>Workshop address</strong>
+            <SectionHead
+              label="Find us"
+              title="Easy to reach from South Delhi and NCR"
+              lede="We are behind Fitness Club Gym in H Block. Use directions for the live route and travel time from where you are."
+            />
+            <div className="hours">
+              <div className="hours__row">
+                <strong>Address</strong>
                 <span>{business.address.full}</span>
               </div>
+              {business.hours.display.map((row) => {
+                const [day, ...rest] = row.split(": ");
+                return (
+                  <div className="hours__row" key={row}>
+                    <strong>{day}</strong>
+                    <span>{rest.join(": ")}</span>
+                  </div>
+                );
+              })}
             </div>
-            <div className="visit-row">
-              <Icon name="clock" />
-              <div>
-                <strong>Hours</strong>
-                <span>{business.hours.display.join(" · ")}</span>
-              </div>
-            </div>
-            <div className="btn-group mt-6">
+            <div className="btn-row mt-6">
               <a
-                className="btn btn-dark"
+                className="btn btn--dark"
                 href={business.maps.directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Open directions <Icon name="external" size="sm" />
               </a>
-              <Link className="btn btn-outline" href="/contact/">
-                Contact the garage
-              </Link>
+              <a className="btn btn--outline" href={getPhoneHref()}>
+                <Icon name="phone" size="sm" /> {getPhoneLabel()}
+              </a>
             </div>
+            <p className="note mt-6">
+              <Icon name="car" size="sm" />
+              <span>
+                Travelling from further out? Send your locality and concern first so we can confirm
+                whether the trip makes sense for the work you need.
+              </span>
+            </p>
           </div>
-          <MapArt />
+          <MapEmbed title="Gear Go Automobiles location in Aya Nagar, New Delhi" />
         </div>
       </section>
 
-      <section className="section compact cream">
-        <div className="container">
-          <div className="section-head">
-            <span className="eyebrow">Localities</span>
-            <h2 className="section-title">Areas we serve</h2>
-            <p className="section-lede">
-              Pick your locality for directions, services and what to expect when you visit. If your
-              area isn’t listed, call or WhatsApp to confirm.
-            </p>
-          </div>
-          <div className="area-card-grid">
+      <section className="section section--paper">
+        <div className="wrap">
+          <SectionHead
+            label="Localities"
+            title="Areas we serve"
+            lede="Pick your locality for a practical note on getting here and the services owners ask about most. If your area is not listed, call or WhatsApp and we will confirm."
+          />
+          <div className="ledger">
             {serviceAreas.map((area, index) => (
-              <Link
-                className="area-card"
-                href={`/service-areas/${area.slug}/`}
-                key={area.slug}
-              >
-                <span className="area-num">{String(index + 1).padStart(2, "0")}</span>
-                <span className="area-icon">
-                  <Icon name="pin" />
+              <Link className="lrow" href={`/service-areas/${area.slug}/`} key={area.slug}>
+                <span>
+                  <span className="lrow__title">
+                    <span className="mono muted small">{String(index + 1).padStart(2, "0")} · </span>
+                    Car service in {area.name}
+                  </span>
+                  <span className="lrow__text">{area.context}</span>
                 </span>
-                <div>
-                  <h3>Car service in {area.name}</h3>
-                  <p>Mechanic, servicing, car wash &amp; dent removal near {area.name}.</p>
-                </div>
-                <span className="area-arrow">
-                  <Icon name="arrow" size="sm" />
+                <span className="lrow__meta">
+                  View area <Icon name="arrow" size="sm" />
                 </span>
               </Link>
             ))}
           </div>
+          <p className="note mt-6">
+            <Icon name="info" size="sm" />
+            <span>
+              The workshop address is fixed. Travel times vary with traffic, so always use directions
+              before setting out.
+            </span>
+          </p>
         </div>
       </section>
 
       <section className="section">
-        <div className="container">
-          <div className="callout callout-wide">
-            <div>
-              <span className="eyebrow">Don’t see your area?</span>
-              <h2>Share your location and we’ll confirm.</h2>
-              <p>
-                Pickup, drop-off, towing and insurance coordination are available subject to
-                confirmation. Call or WhatsApp with your locality and car details so we can tell you
-                what’s possible.
-              </p>
-            </div>
-            <div className="btn-group">
-              <a
-                className="btn btn-lime"
-                href={whatsapp}
-                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-              >
-                WhatsApp us <Icon name="whatsapp" size="sm" />
+        <div className="wrap split">
+          <Figure
+            photo={photos.bandLift}
+            className="photo--3x2 photo--card"
+            sizes="(max-width: 980px) 100vw, 560px"
+          />
+          <div>
+            <SectionHead
+              label="Before you visit"
+              title="What to send us"
+              lede="A short message with these details means we can tell you what the visit should cover before you travel."
+            />
+            <ol className="spec">
+              {[
+                ["Your area", "The locality you are travelling from, so we can judge the trip."],
+                ["Car make, model and year", "Enough to check parts availability and typical scope."],
+                ["The concern or service", "A symptom, warning light, or the service you want."],
+                ["A photo or short video", "Useful for noises, leaks, warning lights or body damage."],
+              ].map(([title, text], i) => (
+                <li key={title}>
+                  <span className="spec__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span>
+                    <strong>{title}.</strong> {text}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="btn-row mt-6">
+              <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+                <Icon name="whatsapp" size="sm" /> Send on WhatsApp
               </a>
-              <Link className="btn btn-outline" href="/contact/">
-                Contact &amp; directions
+              <Link className="btn btn--outline" href="/book/">
+                Use the enquiry form
               </Link>
             </div>
+            <p className="photo-note">
+              The image on this page is illustrative and will be replaced with a real workshop photo.
+            </p>
           </div>
         </div>
       </section>
@@ -174,10 +193,10 @@ export default function AreasPage() {
         text="Inspection first, estimate before paid work, and your approval before anything begins."
         actions={
           <>
-            <Link className="btn btn-dark" href="/book/">
+            <Link className="btn btn--dark" href="/book/">
               Request a service <Icon name="arrow" size="sm" />
             </Link>
-            <Link className="btn btn-outline" href="/services/">
+            <Link className="btn btn--outline" href="/services/">
               Browse services
             </Link>
           </>

@@ -5,7 +5,7 @@ import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
 import SectionHead from "@/components/SectionHead";
-import { business, getWhatsAppHref, isExternalUrl } from "@/data/business";
+import { business, getPhoneHref, getPhoneLabel, getWhatsAppHref, isExternalUrl } from "@/data/business";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -14,53 +14,34 @@ export const metadata: Metadata = pageMetadata({
   path: "/why-gear-go/",
 });
 
-const whatsappMessage = "Hi Gear Go Automobiles, I’d like to understand how your service process works.";
+const whatsappMessage =
+  "Hi Gear Go Automobiles, I'd like to understand how your service process works.";
 
 const points = [
-  {
-    icon: "search" as const,
-    title: "Inspection before recommendation",
-    text: "We check the vehicle and concern first, so recommendations are based on what we find — not assumptions.",
-  },
-  {
-    icon: "shield" as const,
-    title: "Estimate & approval before work",
-    text: "Scope and estimate are shared clearly. Paid work proceeds only after your approval.",
-  },
-  {
-    icon: "message" as const,
-    title: "Plain-language explanations",
-    text: "We explain issues and options in simple terms so you can decide confidently.",
-  },
-  {
-    icon: "car" as const,
-    title: "All car brands & models",
-    text: business.brandsServicedNote,
-  },
-  {
-    icon: "checkCircle" as const,
-    title: "Parts you approve",
-    text: business.policies.parts,
-  },
-  {
-    icon: "route" as const,
-    title: "Convenience support",
-    text: `${business.policies.pickupDropoff} ${business.policies.towing}`,
-  },
-  {
-    icon: "file" as const,
-    title: "Insurance coordination",
-    text: business.policies.insurance,
-  },
-  {
-    icon: "wrench" as const,
-    title: "Workmanship warranty",
-    text: business.policies.warranty,
-  },
+  [
+    "Inspection before recommendation",
+    "We check the vehicle and concern first, so recommendations are based on what we find, not assumptions.",
+  ],
+  [
+    "Estimate and approval before work",
+    "Scope and estimate are shared clearly. Paid work proceeds only after your approval.",
+  ],
+  [
+    "Plain-language explanations",
+    "We explain issues and options in simple terms so you can decide confidently.",
+  ],
+  ["All car brands and models", business.brandsServicedNote],
+  ["Parts you approve", business.policies.parts],
+  ["Practical support", `${business.policies.pickupDropoff} ${business.policies.towing}`],
+  ["Insurance coordination", business.policies.insurance],
+  ["Workmanship warranty", business.policies.warranty],
 ];
 
 export default function WhyPage() {
   const whatsapp = getWhatsAppHref(whatsappMessage);
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
 
   return (
     <>
@@ -72,25 +53,16 @@ export default function WhyPage() {
       />
 
       <PageHero
-        eyebrow="Why Gear Go"
+        label="Why Gear Go"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Why Gear Go" }]}
-        title={
-          <>
-            Car care you can <em>follow, question and approve.</em>
-          </>
-        }
+        title="Car care you can follow, question and approve"
         lede="Honest inspection, clear estimates, your approval before work, and practical support for car owners in Aya Nagar and nearby areas."
         actions={
           <>
-            <a
-              className="btn btn-lime"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
               Ask us anything <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline-light" href="/services/">
+            <Link className="btn btn--light" href="/services/">
               Explore services
             </Link>
           </>
@@ -98,98 +70,120 @@ export default function WhyPage() {
       />
 
       <section className="section">
-        <div className="container">
+        <div className="wrap">
           <SectionHead
-            eyebrow="What’s different"
+            label="What is different"
             title="The process is the promise"
-            lede="We can’t promise every repair will be cheap or quick. We can be clear about how decisions are made, what’s included and what needs your approval."
-            center
+            lede="We cannot promise every repair will be cheap or quick. We can be clear about how decisions are made, what is included, and what needs your approval."
           />
-          <div className="feature-grid">
-            {points.map((point) => (
-              <div className="feature-card" key={point.title}>
-                <span className="icon-box">
-                  <Icon name={point.icon} />
+          <div className="ledger">
+            {points.map(([title, text], i) => (
+              <div className="lrow" key={title}>
+                <span>
+                  <span className="lrow__title">
+                    <span className="mono muted small">{String(i + 1).padStart(2, "0")} · </span>
+                    {title}
+                  </span>
+                  <span className="lrow__text">{text}</span>
                 </span>
-                <h3>{point.title}</h3>
-                <p>{point.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section cream">
-        <div className="container split align-start">
+      <section className="section section--paper">
+        <div className="wrap split">
           <div>
             <SectionHead
-              eyebrow="Before and during"
+              label="Before and during"
               title="What you should expect"
-              lede="A simple standard for every job, whether it’s a routine service or a specific repair."
+              lede="A simple standard for every job, whether it is a routine service or a specific repair."
             />
-            <div className="checklist">
+            <ol className="spec">
               {[
-                ["You describe the concern", "Share the symptom, car details and any photos or videos that help."],
-                ["We inspect the vehicle", "The condition and reported concern are checked before recommendations."],
-                ["You see the scope and estimate", "Findings and options are explained; the estimate is shared for approval."],
-                ["Only approved work proceeds", "Additional findings are discussed separately, not added silently."],
-                ["Handover is explained", "You’re told what was done and what to watch for next."],
-              ].map(([title, text]) => (
-                <div className="checklist-row" key={title}>
-                  <span className="check-icon">
-                    <Icon name="check" />
+                [
+                  "You describe the concern",
+                  "Share the symptom, car details and any photos or videos that help.",
+                ],
+                [
+                  "We inspect the vehicle",
+                  "The condition and reported concern are checked before recommendations.",
+                ],
+                [
+                  "You see the scope and estimate",
+                  "Findings and options are explained; the estimate is shared for approval.",
+                ],
+                [
+                  "Only approved work proceeds",
+                  "Additional findings are discussed separately, not added silently.",
+                ],
+                [
+                  "Handover is explained",
+                  "You are told what was done and what to watch for next.",
+                ],
+              ].map(([title, text], i) => (
+                <li key={title}>
+                  <span className="spec__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span>
+                    <strong>{title}.</strong> {text}
                   </span>
-                  <div>
-                    <strong>{title}</strong>
-                    <span>{text}</span>
-                  </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
 
-          <div className="compare-card">
-            <span className="badge badge-lime no-dot">Clear from the start</span>
-            <h2>Questions we’d rather answer upfront</h2>
-            <div className="compare-row">
-              <strong>What will it cost?</strong>
-              <p>
-                Price depends on the vehicle and scope, so it’s confirmed after inspection. {business.policies.pricing}
-              </p>
+          <aside className="aside">
+            <div className="aside-card">
+              <h3>Questions we would rather answer upfront</h3>
+              <div className="hours">
+                <div className="hours__row">
+                  <strong>What will it cost?</strong>
+                  <span>Confirmed after inspection.</span>
+                </div>
+                <div className="hours__row">
+                  <strong>Extra work without asking?</strong>
+                  <span>No. Paid work needs approval.</span>
+                </div>
+                <div className="hours__row">
+                  <strong>Which parts?</strong>
+                  <span>Only what you approve.</span>
+                </div>
+                <div className="hours__row">
+                  <strong>Collecting the car?</strong>
+                  <span>Ask; it depends on the arrangement.</span>
+                </div>
+              </div>
+              <p className="aside-note">{business.policies.pricing}</p>
+              <Link className="text-link mt-4" href="/faq/">
+                Read all FAQs <Icon name="arrow" size="sm" />
+              </Link>
             </div>
-            <div className="compare-row">
-              <strong>Will extra work happen without asking?</strong>
-              <p>No. Paid work needs your approval. Additional findings are discussed separately.</p>
+            <div className="aside-card">
+              <h3>Talk it through</h3>
+              <p>Share your car make, model and concern. We will tell you what we can help with.</p>
+              <div className="aside-actions">
+                <a className="btn btn--primary btn--block" href={whatsapp} {...waAttrs}>
+                  <Icon name="whatsapp" size="sm" /> WhatsApp us
+                </a>
+                <a className="btn btn--outline btn--block" href={getPhoneHref()}>
+                  <Icon name="phone" size="sm" /> {getPhoneLabel()}
+                </a>
+              </div>
             </div>
-            <div className="compare-row">
-              <strong>Which parts will be used?</strong>
-              <p>{business.policies.parts}</p>
-            </div>
-            <div className="compare-row">
-              <strong>Can I get help collecting the car?</strong>
-              <p>{business.policies.pickupDropoff}</p>
-            </div>
-            <Link className="text-link mt-4" href="/faq/">
-              Read all FAQs <Icon name="arrow" size="sm" />
-            </Link>
-          </div>
+          </aside>
         </div>
       </section>
 
       <CtaBand
         title="Have a concern you want checked?"
-        text="Send your car details on WhatsApp or call. We’ll confirm availability and the next step."
+        text="Send your car details on WhatsApp or call. We will confirm availability and the next step."
         actions={
           <>
-            <a
-              className="btn btn-dark"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
               WhatsApp us <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline" href="/book/">
+            <Link className="btn btn--outline" href="/book/">
               Request a service
             </Link>
           </>

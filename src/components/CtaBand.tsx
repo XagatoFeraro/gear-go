@@ -8,13 +8,13 @@ type Props = {
 
 export default function CtaBand({ title, text, actions }: Props) {
   return (
-    <section className="cta-band">
-      <div className="container cta-band-inner">
+    <section className="cta">
+      <div className="wrap cta__inner">
         <div>
           <h2>{title}</h2>
           {text ? <p>{text}</p> : null}
         </div>
-        <div className="btn-group">{actions}</div>
+        <div className="cta__actions">{actions}</div>
       </div>
     </section>
   );

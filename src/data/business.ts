@@ -396,6 +396,9 @@ export function getDirectionsHref() {
   return business.maps.directionsUrl;
 }
 
+/** Real Google Maps embed built from the confirmed address; no API key required. */
 export function getMapEmbedUrl() {
-  return isPlaceholder(business.maps.embedUrl) ? null : business.maps.embedUrl;
+  if (!isPlaceholder(business.maps.embedUrl)) return business.maps.embedUrl;
+  const query = `${business.name}, ${business.address.full}`;
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
 }

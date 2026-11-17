@@ -22,15 +22,15 @@ export default function TermsPage() {
     <>
       <PageHero
         compact
-        eyebrow="Legal"
+        label="Legal"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Terms" }]}
         title="Terms of Use"
         lede={`The basis for using this website and contacting ${business.name}.`}
       />
 
       <section className="section">
-        <div className="container">
-          <div className="content-page">
+        <div className="wrap">
+          <div className="prose">
             <p className="content-meta">Last updated: 16 November 2026</p>
             <p>
               This website provides information about {business.name} and a way to contact or request
@@ -63,20 +63,18 @@ export default function TermsPage() {
               <a href={getPhoneHref()}>{getPhoneLabel()}</a> or{" "}
               <a href={getEmailHref()}>{getEmailLabel()}</a>.
             </p>
-
-            <div className="inline-note">
-              <Icon name="info" size="sm" />
-              <span>
-                These terms are a working draft. Final legal review is required before launch.
-              </span>
-            </div>
-
-            <p className="mt-6">
-              <Link className="text-link" href="/privacy/">
-                Read the privacy policy <Icon name="arrow" size="sm" />
-              </Link>
-            </p>
           </div>
+
+          <p className="note mt-6">
+            <Icon name="info" size="sm" />
+            <span>These terms are a working draft. Final legal review is required before launch.</span>
+          </p>
+
+          <p className="mt-6">
+            <Link className="text-link" href="/privacy/">
+              Read the privacy policy <Icon name="arrow" size="sm" />
+            </Link>
+          </p>
         </div>
       </section>
     </>

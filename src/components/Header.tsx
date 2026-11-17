@@ -7,6 +7,7 @@ import Icon from "@/components/Icon";
 import {
   business,
   getPhoneHref,
+  getPhoneLabel,
   getWhatsAppHref,
   isExternalUrl,
   isPlaceholder,
@@ -27,8 +28,6 @@ export default function Header() {
   const [openFor, setOpenFor] = useState<string | null>(null);
   const open = openFor === pathname;
   const closeMenu = () => setOpenFor(null);
-  const toggleMenu = () => setOpenFor((current) => (current === pathname ? null : pathname));
-  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -39,16 +38,6 @@ export default function Header() {
     basePath && pathname.startsWith(basePath)
       ? pathname.slice(basePath.length) || "/"
       : pathname;
-
-  useEffect(() => {
-    const onScroll = () => {
-      const hasHero = Boolean(document.querySelector("main .hero, main .page-hero"));
-      setScrolled(window.scrollY > 24 || !hasHero);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -75,7 +64,7 @@ export default function Header() {
   }, [open]);
 
   const isActive = (href: string) =>
-    href === "/" ? path === "/" : path === href || path.startsWith(`${href}`);
+    href === "/" ? path === "/" : path === href || path.startsWith(href);
 
   const trapFocus = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "Tab") return;
@@ -95,18 +84,14 @@ export default function Header() {
   };
 
   return (
-    <header className={`site-header${scrolled ? " scrolled" : ""}`}>
-      <div className="site-header-inner">
+    <header className="site-header">
+      <div className="wrap site-header__inner">
         <Link href="/" className="brand" aria-label={`${business.name} home`}>
-          <span className="brand-mark">
-            <Icon name="car" />
-          </span>
-          <span className="brand-name">
-            Gear Go<small>Automobiles</small>
-          </span>
+          <span className="brand__name">Gear Go</span>
+          <span className="brand__sub">Automobiles · Aya Nagar</span>
         </Link>
 
-        <nav className="site-nav" aria-label="Primary">
+        <nav className="nav" aria-label="Primary">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -118,27 +103,28 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="header-actions">
-          <a className="btn btn-outline btn-sm header-call" href={getPhoneHref()}>
+        <div className="header__actions">
+          <a className="header__phone" href={getPhoneHref()}>
             <Icon name="phone" size="sm" />
-            {isPlaceholder(business.phone.display) ? "Contact" : "Call"}
+            <span>{isPlaceholder(business.phone.display) ? "Contact" : getPhoneLabel()}</span>
           </a>
           <a
-            className="btn btn-lime btn-sm"
+            className="btn btn--primary btn--sm"
             href={whatsapp}
             target={isExternalUrl(whatsapp) ? "_blank" : undefined}
             rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
           >
-            WhatsApp
+            <Icon name="whatsapp" size="sm" />
+            <span className="header__wa-text">WhatsApp</span>
           </a>
           <button
             ref={toggleRef}
             type="button"
-            className="mobile-toggle"
+            className="menu-btn"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
-            onClick={() => toggleMenu()}
+            onClick={() => setOpenFor((current) => (current === pathname ? null : pathname))}
           >
             <Icon name={open ? "close" : "menu"} />
           </button>
@@ -148,69 +134,68 @@ export default function Header() {
       <div
         id="mobile-menu"
         ref={menuRef}
-        className={`mobile-menu${open ? " open" : ""}`}
+        className="mobile-menu"
         role="dialog"
         aria-modal="true"
         aria-label="Site menu"
         hidden={!open}
         onKeyDown={trapFocus}
       >
-        <div className="mobile-menu-head">
-          <Link href="/" className="brand" onClick={() => closeMenu()} aria-label={`${business.name} home`}>
-            <span className="brand-mark">
-              <Icon name="car" />
-            </span>
-            <span className="brand-name">
-              Gear Go<small>Automobiles</small>
-            </span>
+        <div className="mobile-menu__head">
+          <Link href="/" className="brand" onClick={closeMenu} aria-label={`${business.name} home`}>
+            <span className="brand__name">Gear Go</span>
+            <span className="brand__sub">Automobiles · Aya Nagar</span>
           </Link>
           <button
             ref={closeRef}
             type="button"
             className="mobile-close"
             aria-label="Close menu"
-            onClick={() => closeMenu()}
+            onClick={closeMenu}
           >
             <Icon name="close" />
           </button>
         </div>
 
-        <nav className="mobile-menu-nav" aria-label="Mobile">
+        <nav className="mobile-menu__nav" aria-label="Mobile">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              onClick={() => closeMenu()}
+              onClick={closeMenu}
               aria-current={isActive(item.href) ? "page" : undefined}
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/faq/" onClick={() => closeMenu()}>
+          <Link href="/faq/" onClick={closeMenu}>
             FAQ
+          </Link>
+          <Link href="/book/" onClick={closeMenu}>
+            Request a service
           </Link>
         </nav>
 
-        <div className="mobile-menu-actions">
+        <div className="mobile-menu__actions">
           <a
-            className="btn btn-lime btn-block"
+            className="btn btn--primary btn--block"
             href={whatsapp}
             target={isExternalUrl(whatsapp) ? "_blank" : undefined}
             rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            onClick={() => closeMenu()}
+            onClick={closeMenu}
           >
             <Icon name="whatsapp" size="sm" /> WhatsApp us
           </a>
-          <a className="btn btn-outline-light btn-block" href={getPhoneHref()} onClick={() => closeMenu()}>
+          <a className="btn btn--outline btn--block" href={getPhoneHref()} onClick={closeMenu}>
             <Icon name="phone" size="sm" />
-            {isPlaceholder(business.phone.display) ? "Contact us" : `Call ${business.phone.display}`}
+            {isPlaceholder(business.phone.display) ? "Contact us" : `Call ${getPhoneLabel()}`}
           </a>
-          <Link className="btn btn-outline-light btn-block" href="/book/" onClick={() => closeMenu()}>
-            Request a service
+          <Link className="btn btn--outline btn--block" href="/contact/" onClick={closeMenu}>
+            Address &amp; directions
           </Link>
         </div>
 
-        <p className="mobile-menu-note">
+        <p className="mobile-menu__note">
           {business.address.full}
           <br />
           {business.hours.display.join(" · ")}

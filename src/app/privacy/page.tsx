@@ -21,15 +21,15 @@ export default function PrivacyPage() {
     <>
       <PageHero
         compact
-        eyebrow="Legal"
+        label="Legal"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Privacy" }]}
         title="Privacy Policy"
         lede={`How ${business.name} handles information shared through this website.`}
       />
 
       <section className="section">
-        <div className="container">
-          <div className="content-page">
+        <div className="wrap">
+          <div className="prose">
             <p className="content-meta">Last updated: 16 November 2026</p>
             <p>
               {business.name} (“we”, “us”) respects your privacy. This page explains how we handle
@@ -38,29 +38,35 @@ export default function PrivacyPage() {
 
             <h2>Information we collect</h2>
             <ul>
-              <li>Details you submit in an enquiry form (such as name, phone number, vehicle details, service needed, and message).</li>
+              <li>
+                Details you submit in an enquiry form (such as name, phone number, vehicle details,
+                service needed, and message).
+              </li>
               <li>Information you share when you call, WhatsApp, or email us.</li>
-              <li>Basic usage/analytics data if analytics are enabled on this website.</li>
+              <li>Basic usage or analytics data if analytics are enabled on this website.</li>
             </ul>
 
             <h2>How we use information</h2>
             <ul>
               <li>To respond to your enquiry and confirm service availability.</li>
-              <li>To provide requested service information and communicate about your visit or vehicle concern.</li>
-              <li>To improve the website and understand general usage (if analytics are enabled).</li>
+              <li>
+                To provide requested service information and communicate about your visit or vehicle
+                concern.
+              </li>
+              <li>To improve the website and understand general usage, if analytics are enabled.</li>
             </ul>
 
             <h2>Sharing</h2>
             <p>
-              We do not sell your personal information. Enquiry details may be processed by the
-              form/communication providers used to deliver your message to us. We may share information
-              if required by law.
+              We do not sell your personal information. Enquiry details may be processed by the form or
+              communication providers used to deliver your message to us. We may share information if
+              required by law.
             </p>
 
             <h2>Retention</h2>
             <p>
-              We keep enquiry information only as long as needed to respond and for legitimate
-              business/record purposes, as applicable.
+              We keep enquiry information only as long as needed to respond and for legitimate business
+              or record purposes, as applicable.
             </p>
 
             <h2>Your choices</h2>
@@ -80,15 +86,15 @@ export default function PrivacyPage() {
               <br />
               Email: <a href={getEmailHref()}>{getEmailLabel()}</a>
             </p>
-
-            <div className="inline-note">
-              <Icon name="info" size="sm" />
-              <span>
-                This policy is a working draft. Final legal review and confirmed provider details are
-                required before launch.
-              </span>
-            </div>
           </div>
+
+          <p className="note mt-6">
+            <Icon name="info" size="sm" />
+            <span>
+              This policy is a working draft. Final legal review and confirmed provider details are
+              required before launch.
+            </span>
+          </p>
         </div>
       </section>
     </>

@@ -1,33 +1,45 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
 import PageHero from "@/components/PageHero";
-import ServiceCard from "@/components/ServiceCard";
+import SectionHead from "@/components/SectionHead";
 import {
   business,
   getWhatsAppHref,
   isExternalUrl,
   services,
 } from "@/data/business";
+import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Car Services, Repairs & Car Wash in Aya Nagar",
-  description: `Car servicing, mechanic repairs, car wash, dent removal, AC repair, brakes, battery, tyres and more at ${business.name}, Aya Nagar, New Delhi. Price confirmed after inspection. Call or WhatsApp.`,
+  description: `Car servicing, mechanic repairs, car wash, dent removal, AC repair, brakes, battery and tyres at ${business.name}, Aya Nagar, New Delhi. Price confirmed after inspection.`,
   path: "/services/",
 });
 
-const popular = [
-  "periodic-car-service",
-  "ac-service-repair",
-  "denting-painting",
-  "car-spa-cleaning",
-  "brake-suspension",
-  "engine-diagnostics",
-  "battery-service",
-  "tyres-wheel-care",
+const groups = ["Maintenance", "Diagnostics", "Repairs", "Safety", "Comfort", "Care", "Bodywork"] as const;
+
+const groupCopy: Record<(typeof groups)[number], string> = {
+  Maintenance: "Scheduled servicing and condition checks that keep the car on the road.",
+  Diagnostics: "Warning lights and running faults traced before parts are replaced.",
+  Repairs: "Mechanical, electrical and body-part work for a specific concern.",
+  Safety: "Brakes, suspension, tyres, battery and lights checked as safety items.",
+  Comfort: "Air conditioning and cabin issues that affect how the car feels to use.",
+  Care: "Washing, interior cleaning and detailing for appearance and condition.",
+  Bodywork: "Dents, paint, glass and damage assessed and repaired.",
+};
+
+const symptoms = [
+  ["AC not cooling", "AC Service & Repair", "ac-service-repair"],
+  ["Brake noise or a soft pedal", "Brake & Suspension Checks", "brake-suspension"],
+  ["Warning light on the dash", "Engine Diagnostics", "engine-diagnostics"],
+  ["Dent or scrape after a knock", "Denting & Painting", "denting-painting"],
+  ["Car will not start", "Battery Service", "battery-service"],
+  ["Car needs a wash or interior clean", "Car Spa & Cleaning", "car-spa-cleaning"],
 ];
 
 const whatsappMessage =
@@ -35,10 +47,9 @@ const whatsappMessage =
 
 export default function ServicesPage() {
   const whatsapp = getWhatsAppHref(whatsappMessage);
-  const groups = Array.from(new Set(services.map((s) => s.group)));
-  const popularServices = popular
-    .map((slug) => services.find((s) => s.slug === slug))
-    .filter(Boolean) as typeof services;
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
 
   return (
     <>
@@ -50,25 +61,16 @@ export default function ServicesPage() {
       />
 
       <PageHero
-        eyebrow="Service catalogue"
+        label={`${services.length} services · All car brands`}
         breadcrumb={[{ name: "Home", href: "/" }, { name: "Services" }]}
-        title={
-          <>
-            Care for the way you <em>actually drive.</em>
-          </>
-        }
-        lede="Twenty services covering maintenance, diagnostics, repairs, bodywork and cleaning. Each one starts with an inspection, a clear scope and your approval before paid work."
+        title="Car services and repairs in Aya Nagar"
+        lede="Maintenance, diagnostics, repairs, bodywork and cleaning. Each service starts with the car being checked, a clear scope, and your approval before paid work."
         actions={
           <>
-            <a
-              className="btn btn-lime"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
               Ask what you need <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline-light" href="/book/">
+            <Link className="btn btn--light" href="/book/">
               Request a service
             </Link>
           </>
@@ -76,100 +78,99 @@ export default function ServicesPage() {
       />
 
       <section className="section">
-        <div className="container">
-          <div className="section-head-row">
-            <div className="section-head">
-              <span className="eyebrow">Most requested</span>
-              <h2 className="section-title">Popular services</h2>
-              <p className="section-lede">
-                The jobs car owners ask for most often. Tap any service for what’s included, signs to
-                watch for and how to enquire.
-              </p>
-            </div>
-            <div className="section-head-action">
-              <span className="badge no-dot">Price after inspection</span>
-            </div>
-          </div>
-          <div className="service-grid">
-            {popularServices.map((service, index) => (
-              <ServiceCard service={service} index={index} key={service.slug} />
+        <div className="wrap">
+          <SectionHead
+            label="Not sure where to start"
+            title="Start with the symptom"
+            lede="Pick the problem you are noticing. If it is not listed, describe it on WhatsApp and we will point you to the right service."
+          />
+          <div className="rows">
+            {symptoms.map(([symptom, service, slug]) => (
+              <Link className="row" href={`/services/${slug}/`} key={slug}>
+                <span className="row__main">
+                  <span className="row__title">{symptom}</span>
+                  <span className="row__meta">{service}</span>
+                </span>
+                <Icon name="arrow" size="sm" />
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {groups.map((group, groupIndex) => (
-        <section
-          className={`section compact${groupIndex % 2 === 0 ? " cream" : ""}`}
-          key={group}
-          id={group.toLowerCase()}
-        >
-          <div className="container">
-            <div className="section-head-row">
-              <div className="section-head">
-                <span className="eyebrow">{group}</span>
-                <h2 className="section-title">{group} services</h2>
-              </div>
-              <div className="section-head-action">
-                <span className="badge no-dot">
-                  {services.filter((s) => s.group === group).length} services
-                </span>
-              </div>
-            </div>
-            <div className="service-grid">
-              {services
-                .filter((s) => s.group === group)
-                .map((service) => (
-                  <ServiceCard service={service} showGroup={false} key={service.slug} />
-                ))}
-            </div>
+      <section className="section section--paper">
+        <div className="wrap split">
+          <div>
+            <SectionHead
+              title="Price follows inspection"
+              lede="A service page can tell you what a job usually involves. It cannot tell you the price of your car without seeing it."
+            />
+            <p className="lede">
+              Make, model, condition and parts availability all change the scope. We check the car,
+              explain the findings, and share the estimate before work begins. If something extra is
+              found, it is discussed separately.
+            </p>
+            <ul className="spec spec--dots mt-6">
+              <li>{business.policies.parts}</li>
+              <li>{business.policies.pricing}</li>
+              <li>{business.policies.warranty}</li>
+            </ul>
           </div>
-        </section>
-      ))}
-
-      <section className="section">
-        <div className="container">
-          <div className="callout callout-wide">
-            <div>
-              <span className="eyebrow">Not sure what you need?</span>
-              <h2>Describe the issue. We’ll guide the next step.</h2>
-              <p>
-                Share your car make, model and the symptom — a noise, warning light, weak AC, dent or
-                anything else. A photo or short video on WhatsApp often helps us point you in the right
-                direction before you visit. {business.brandsServicedNote}
-              </p>
-            </div>
-            <div className="btn-group">
-              <a
-                className="btn btn-lime"
-                href={whatsapp}
-                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-              >
-                WhatsApp us <Icon name="whatsapp" size="sm" />
-              </a>
-              <Link className="btn btn-outline" href="/book/">
-                Request a service
-              </Link>
-            </div>
-          </div>
+          <Figure
+            photo={photos.engineBay}
+            className="photo--4x3"
+            sizes="(max-width: 980px) 100vw, 540px"
+            showCaption
+          />
         </div>
       </section>
 
+      {groups.map((group, groupIndex) => {
+        const items = services.filter((service) => service.group === group);
+        return (
+          <section
+            className={`section section--tight${groupIndex % 2 === 1 ? " section--paper" : ""}`}
+            key={group}
+            id={group.toLowerCase()}
+          >
+            <div className="wrap">
+              <div className="sec-head-row">
+                <div className="sec-head">
+                  <span className="label">{String(groupIndex + 1).padStart(2, "0")}</span>
+                  <h2 className="sec-head__title">{group}</h2>
+                  <p className="sec-head__lede">{groupCopy[group]}</p>
+                </div>
+                <span className="small muted">
+                  {items.length} {items.length === 1 ? "service" : "services"}
+                </span>
+              </div>
+              <div className="ledger">
+                {items.map((service) => (
+                  <Link className="lrow" href={`/services/${service.slug}/`} key={service.slug}>
+                    <span>
+                      <span className="lrow__title">{service.name}</span>
+                      <span className="lrow__text">{service.shortDescription}</span>
+                    </span>
+                    <span className="lrow__meta">
+                      Inspect &amp; quote <Icon name="arrow" size="sm" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
       <CtaBand
-        title="Every price is confirmed after inspection."
-        text="No online payment and no automatic booking. Send your car details and we’ll confirm availability, scope and estimate directly."
+        title="Describe the car and the problem."
+        text="A short message is enough. We will confirm availability, inspect the car, and share the scope and estimate before work."
         actions={
           <>
-            <a
-              className="btn btn-dark"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
               WhatsApp us <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline" href="/contact/">
+            <Link className="btn btn--outline" href="/contact/">
               Contact &amp; directions
             </Link>
           </>

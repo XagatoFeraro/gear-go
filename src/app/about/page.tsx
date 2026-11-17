@@ -1,13 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CtaBand from "@/components/CtaBand";
+import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import MapArt from "@/components/MapArt";
+import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
-import ProcessVisual from "@/components/ProcessVisual";
 import SectionHead from "@/components/SectionHead";
-import { business, getPhoneHref, getPhoneLabel, getWhatsAppHref, isExternalUrl } from "@/data/business";
+import {
+  business,
+  getPhoneHref,
+  getPhoneLabel,
+  getWhatsAppHref,
+  isExternalUrl,
+} from "@/data/business";
+import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -16,10 +23,13 @@ export const metadata: Metadata = pageMetadata({
   path: "/about/",
 });
 
-const whatsappMessage = "Hi Gear Go Automobiles, I’d like to know more about the garage and services.";
+const whatsappMessage = "Hi Gear Go Automobiles, I'd like to know more about the garage and services.";
 
 export default function AboutPage() {
   const whatsapp = getWhatsAppHref(whatsappMessage);
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
 
   return (
     <>
@@ -31,25 +41,16 @@ export default function AboutPage() {
       />
 
       <PageHero
-        eyebrow="About us"
+        label="About us"
         breadcrumb={[{ name: "Home", href: "/" }, { name: "About" }]}
-        title={
-          <>
-            A local garage built on <em>clear communication.</em>
-          </>
-        }
-        lede={`${business.name} is a multi-brand car service garage in Aya Nagar, New Delhi — focused on inspection-first recommendations, plain-language explanations, and work you approve.`}
+        title="A local garage built on clear communication"
+        lede={`${business.name} is a multi-brand car service garage in Aya Nagar, New Delhi. Inspection-first recommendations, plain-language explanations, and work you approve.`}
         actions={
           <>
-            <a
-              className="btn btn-lime"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
               Talk to us <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline-light" href="/services/">
+            <Link className="btn btn--light" href="/services/">
               View services
             </Link>
           </>
@@ -57,99 +58,85 @@ export default function AboutPage() {
       />
 
       <section className="section">
-        <div className="container split">
+        <div className="wrap split">
           <div>
             <SectionHead
-              eyebrow="Who we are"
+              label="Who we are"
               title="Car care for Aya Nagar and nearby South Delhi"
-              lede={`We serve car owners in Aya Nagar and surrounding South Delhi/NCR areas with servicing, mechanic repairs, car wash, dent removal, diagnostics and more. ${business.brandsServicedNote}`}
+              lede={`We serve car owners in Aya Nagar and surrounding South Delhi and NCR areas with servicing, mechanic repairs, car wash, dent removal, diagnostics and more. ${business.brandsServicedNote}`}
             />
-            <p className="lead">
-              The workshop is in Phase 4, H Block, Aya Nagar, behind Fitness Club Gym. Whether it’s a
+            <p className="lede">
+              The workshop is in Phase 4, H Block, Aya Nagar, behind Fitness Club Gym. Whether it is a
               routine service, a warning light, a weak AC or a dent you want fixed, the starting point is
               the same: look at the vehicle, explain what we find, and agree the work before it begins.
             </p>
-            <div className="checklist">
-              <div className="checklist-row">
-                <span className="check-icon">
-                  <Icon name="check" />
-                </span>
-                <div>
-                  <strong>Multi-brand workshop</strong>
-                  <span>Servicing and repairs for all car brands and models.</span>
-                </div>
-              </div>
-              <div className="checklist-row">
-                <span className="check-icon">
-                  <Icon name="check" />
-                </span>
-                <div>
-                  <strong>Inspection-first approach</strong>
-                  <span>Recommendations follow what we find on the vehicle.</span>
-                </div>
-              </div>
-              <div className="checklist-row">
-                <span className="check-icon">
-                  <Icon name="check" />
-                </span>
-                <div>
-                  <strong>Approval before paid work</strong>
-                  <span>Scope and estimate are shared before anything proceeds.</span>
-                </div>
-              </div>
-            </div>
+            <ol className="spec mt-6">
+              {[
+                ["Multi-brand workshop", "Servicing and repairs for all car brands and models."],
+                ["Inspection-first approach", "Recommendations follow what we find on the vehicle."],
+                ["Approval before paid work", "Scope and estimate are shared before anything proceeds."],
+              ].map(([title, text], i) => (
+                <li key={title}>
+                  <span className="spec__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span>
+                    <strong>{title}.</strong> {text}
+                  </span>
+                </li>
+              ))}
+            </ol>
           </div>
-          <ProcessVisual />
+          <div className="plate">
+            <Figure photo={photos.aboutFrontage} sizes="(max-width: 760px) 100vw, 260px" showCaption={false} />
+            <Figure photo={photos.aboutDesk} sizes="(max-width: 760px) 100vw, 260px" showCaption={false} />
+            <Figure photo={photos.aboutWorkshop} sizes="(max-width: 760px) 100vw, 260px" showCaption={false} />
+          </div>
+        </div>
+        <div className="wrap">
+          <p className="photo-note">
+            Illustrative images, not our workshop. They will be replaced with real Gear Go photos.
+          </p>
         </div>
       </section>
 
-      <section className="section cream">
-        <div className="container">
+      <section className="section section--paper">
+        <div className="wrap">
           <SectionHead
-            eyebrow="How we work"
+            label="How we work"
             title="Straight answers, practical options"
             lede="A few principles that shape every visit, from a quick check to bodywork."
-            center
           />
-          <div className="feature-grid">
+          <div className="ledger">
             {[
-              {
-                icon: "search" as const,
-                title: "Look before recommending",
-                text: "We check the vehicle and the concern you reported, so the recommendation matches the actual condition.",
-              },
-              {
-                icon: "message" as const,
-                title: "Explain in plain language",
-                text: "Findings and options are explained simply, without pressure or jargon.",
-              },
-              {
-                icon: "shield" as const,
-                title: "Agree the estimate first",
-                text: "Paid work begins only after you’ve seen the scope and estimate and given approval.",
-              },
-              {
-                icon: "wrench" as const,
-                title: "Do the agreed work",
-                text: "The approved work is completed and the handover is explained clearly.",
-              },
-              {
-                icon: "checkCircle" as const,
-                title: "Parts you approve",
-                text: business.policies.parts,
-              },
-              {
-                icon: "route" as const,
-                title: "Practical support",
-                text: `${business.policies.pickupDropoff} ${business.policies.towing}`,
-              },
-            ].map((item) => (
-              <div className="feature-card" key={item.title}>
-                <span className="icon-box">
-                  <Icon name={item.icon} />
+              [
+                "Look before recommending",
+                "We check the vehicle and the concern you reported, so the recommendation matches the actual condition.",
+              ],
+              [
+                "Explain in plain language",
+                "Findings and options are explained simply, without pressure or jargon.",
+              ],
+              [
+                "Agree the estimate first",
+                "Paid work begins only after you have seen the scope and estimate and given approval.",
+              ],
+              [
+                "Do the agreed work",
+                "The approved work is completed and the handover is explained clearly.",
+              ],
+              ["Parts you approve", business.policies.parts],
+              [
+                "Practical support",
+                `${business.policies.pickupDropoff} ${business.policies.towing}`,
+              ],
+            ].map(([title, text], i) => (
+              <div className="lrow" key={title}>
+                <span>
+                  <span className="lrow__title">
+                    <span className="mono muted small">{String(i + 1).padStart(2, "0")} · </span>
+                    {title}
+                  </span>
+                  <span className="lrow__text">{text}</span>
                 </span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
               </div>
             ))}
           </div>
@@ -157,66 +144,59 @@ export default function AboutPage() {
       </section>
 
       <section className="section">
-        <div className="container split split-map">
+        <div className="wrap split split--wide">
           <div>
             <SectionHead
-              eyebrow="Visit"
+              label="Visit"
               title="Find the workshop"
-              lede="Use directions for the current route and travel time. If you’re unsure about parking or arrival, call or WhatsApp before you leave."
+              lede="Use directions for the current route and travel time. If you are unsure about parking or arrival, call or WhatsApp before you leave."
             />
-            <div className="visit-row">
-              <Icon name="pin" />
-              <div>
+            <div className="hours">
+              <div className="hours__row">
                 <strong>Address</strong>
                 <span>{business.address.full}</span>
               </div>
+              {business.hours.display.map((row) => {
+                const [day, ...rest] = row.split(": ");
+                return (
+                  <div className="hours__row" key={row}>
+                    <strong>{day}</strong>
+                    <span>{rest.join(": ")}</span>
+                  </div>
+                );
+              })}
             </div>
-            <div className="visit-row">
-              <Icon name="clock" />
-              <div>
-                <strong>Hours</strong>
-                <span>{business.hours.display.join(" · ")}</span>
-              </div>
-            </div>
-            <div className="visit-row">
-              <Icon name="info" />
-              <div>
-                <strong>Pricing</strong>
-                <span>{business.policies.pricing}</span>
-              </div>
-            </div>
-            <div className="btn-group mt-6">
+            <p className="note mt-6">
+              <Icon name="info" size="sm" />
+              <span>{business.policies.pricing}</span>
+            </p>
+            <div className="btn-row mt-6">
               <a
-                className="btn btn-dark"
+                className="btn btn--dark"
                 href={business.maps.directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Get directions <Icon name="external" size="sm" />
               </a>
-              <a className="btn btn-outline" href={getPhoneHref()}>
-                {getPhoneLabel()}
+              <a className="btn btn--outline" href={getPhoneHref()}>
+                <Icon name="phone" size="sm" /> {getPhoneLabel()}
               </a>
             </div>
           </div>
-          <MapArt />
+          <MapEmbed title="Gear Go Automobiles workshop location in Aya Nagar, New Delhi" />
         </div>
       </section>
 
       <CtaBand
         title="Have a question before you visit?"
-        text="Tell us your car and concern. We’ll guide you on the likely next step and what to expect."
+        text="Tell us your car and concern. We will guide you on the likely next step and what to expect."
         actions={
           <>
-            <a
-              className="btn btn-dark"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
               WhatsApp us <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline" href="/contact/">
+            <Link className="btn btn--outline" href="/contact/">
               Contact the garage
             </Link>
           </>

@@ -5,6 +5,7 @@ import {
   getEmailHref,
   getEmailLabel,
   getPhoneHref,
+  getPhoneLabel,
   getWhatsAppHref,
   isExternalUrl,
   isPlaceholder,
@@ -17,20 +18,22 @@ export default function Footer() {
 
   return (
     <footer className="site-footer">
-      <div className="container">
+      <div className="wrap">
         <div className="footer-grid">
-          <div className="footer-brand-col">
+          <div className="footer-brand">
             <Link href="/" className="brand" aria-label={`${business.name} home`}>
-              <span className="brand-mark">
-                <Icon name="car" />
-              </span>
-              <span className="brand-name">
-                Gear Go<small>Automobiles</small>
-              </span>
+              <span className="brand__name">Gear Go</span>
+              <span className="brand__sub">Automobiles · Aya Nagar</span>
             </Link>
-            <p className="footer-address">{business.address.full}</p>
-            <p className="footer-contact">
-              <a href={getPhoneHref()}>{isPlaceholder(business.phone.display) ? "Call or WhatsApp" : business.phone.display}</a>
+            <p>
+              Multi-brand car workshop in Aya Nagar, New Delhi. Inspection first, estimate before
+              work, your approval before anything starts.
+            </p>
+            <p>{business.address.full}</p>
+            <div className="footer-contacts">
+              <a href={getPhoneHref()}>
+                {isPlaceholder(business.phone.display) ? "Call or WhatsApp" : getPhoneLabel()}
+              </a>
               <a
                 href={whatsapp}
                 target={isExternalUrl(whatsapp) ? "_blank" : undefined}
@@ -39,13 +42,18 @@ export default function Footer() {
                 WhatsApp
               </a>
               <a href={getEmailHref()}>{getEmailLabel()}</a>
-            </p>
-            <a className="footer-directions" href={business.maps.directionsUrl} target="_blank" rel="noopener noreferrer">
+            </div>
+            <a
+              className="footer-directions"
+              href={business.maps.directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Get directions <Icon name="arrow" size="sm" />
             </a>
           </div>
 
-          <div>
+          <div className="footer-col">
             <h4>Explore</h4>
             <Link href="/services/">All services</Link>
             <Link href="/service-areas/">Service areas</Link>
@@ -55,28 +63,34 @@ export default function Footer() {
             <Link href="/contact/">Contact</Link>
           </div>
 
-          <div>
+          <div className="footer-col">
             <h4>Popular services</h4>
             {featured.map((service) => (
               <Link href={`/services/${service.slug}/`} key={service.slug}>
                 {service.name}
               </Link>
             ))}
-            <Link href="/services/">View all 20 services</Link>
+            <Link href="/services/">All {services.length} services</Link>
           </div>
 
-          <div>
-            <h4>Visit</h4>
-            <p className="footer-hours">{business.hours.display.join(" · ")}</p>
+          <div className="footer-col">
+            <h4>Workshop</h4>
+            {business.hours.display.map((row) => (
+              <p key={row}>{row}</p>
+            ))}
             <Link href="/book/">Request a service</Link>
             <Link href="/privacy/">Privacy</Link>
             <Link href="/terms/">Terms</Link>
-            <p className="footer-note">Prices are confirmed after inspection. No payment or automatic booking is taken on this website.</p>
+            <p className="footer-note">
+              Prices are confirmed after inspection. No payment or booking is taken on this website.
+            </p>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} {business.name}. All rights reserved.
+          </p>
           <p>Aya Nagar, New Delhi · Multi-brand car service</p>
         </div>
       </div>

@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CtaBand from "@/components/CtaBand";
+import Figure from "@/components/Figure";
 import Icon from "@/components/Icon";
 import JsonLd from "@/components/JsonLd";
-import MapArt from "@/components/MapArt";
+import MapEmbed from "@/components/MapEmbed";
 import PageHero from "@/components/PageHero";
-import ServiceCard from "@/components/ServiceCard";
+import SectionHead from "@/components/SectionHead";
 import {
   business,
   getPhoneHref,
@@ -17,6 +18,7 @@ import {
   serviceAreas,
   services,
 } from "@/data/business";
+import { photos } from "@/lib/photos";
 import { getBreadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -44,6 +46,9 @@ export default async function AreaDetail({ params }: Props) {
   const whatsapp = getWhatsAppHref(
     `Hi Gear Go Automobiles, I need car service near ${area.name}. My car is ____ and the issue/service is ____.`,
   );
+  const waAttrs = {
+    ...(isExternalUrl(whatsapp) ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  };
   const focusServices = area.focus
     .map((serviceSlug) => services.find((service) => service.slug === serviceSlug))
     .filter(Boolean) as typeof services;
@@ -59,34 +64,25 @@ export default async function AreaDetail({ params }: Props) {
       />
 
       <PageHero
-        eyebrow="Service area"
+        compact
+        label="Service area"
         breadcrumb={[
           { name: "Home", href: "/" },
           { name: "Service areas", href: "/service-areas/" },
           { name: area.name },
         ]}
-        title={
-          <>
-            Car service &amp; mechanic in <em>{area.name}</em>
-          </>
-        }
-        lede={`Looking for a reliable car mechanic, garage, car wash or dent removal near ${area.name}? ${area.context}`}
+        title={`Car service and mechanic in ${area.name}`}
+        lede={area.context}
         actions={
           <>
-            <a
-              className="btn btn-lime"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
               WhatsApp about {area.name} <Icon name="whatsapp" size="sm" />
             </a>
-            <a className="btn btn-outline-light" href={getPhoneHref()}>
-              <Icon name="phone" size="sm" />
-              {getPhoneLabel()}
+            <a className="btn btn--light" href={getPhoneHref()}>
+              <Icon name="phone" size="sm" /> {getPhoneLabel()}
             </a>
             <a
-              className="btn btn-outline-light"
+              className="btn btn--light"
               href={business.maps.directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -98,127 +94,137 @@ export default async function AreaDetail({ params }: Props) {
       />
 
       <section className="section">
-        <div className="container">
-          <div className="split split-map">
-            <div>
-              <span className="eyebrow">Getting here</span>
-              <h2 className="section-title">From {area.name} to our Aya Nagar workshop</h2>
-              <p className="section-lede">
-                Our workshop is in Phase 4, H Block, Aya Nagar, behind Fitness Club Gym. Use directions
-                for the most accurate route and current travel time from {area.name}.
-              </p>
-              <div className="visit-row">
-                <Icon name="pin" />
-                <div>
-                  <strong>Workshop address</strong>
-                  <span>{business.address.full}</span>
-                </div>
+        <div className="wrap split split--wide">
+          <div>
+            <SectionHead
+              label="Getting here"
+              title={`From ${area.name} to the Aya Nagar workshop`}
+              lede="Our workshop is in Phase 4, H Block, Aya Nagar, behind Fitness Club Gym. Use directions for the most accurate route and current travel time."
+            />
+            <div className="hours">
+              <div className="hours__row">
+                <strong>Workshop</strong>
+                <span>{business.address.full}</span>
               </div>
-              <div className="visit-row">
-                <Icon name="clock" />
-                <div>
-                  <strong>Hours</strong>
-                  <span>{business.hours.display.join(" · ")}</span>
-                </div>
-              </div>
-              <div className="visit-row">
-                <Icon name="car" />
-                <div>
-                  <strong>Arriving by car</strong>
-                  <span>
-                    {isPlaceholder(business.parkingNote)
-                      ? "Parking and arrival details are confirmed when you call or WhatsApp."
-                      : business.parkingNote}
-                  </span>
-                </div>
-              </div>
-              <div className="btn-group mt-6">
-                <a
-                  className="btn btn-dark"
-                  href={business.maps.directionsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Get directions <Icon name="external" size="sm" />
-                </a>
-                <Link className="btn btn-outline" href="/contact/">
-                  Contact &amp; map
-                </Link>
+              {business.hours.display.map((row) => {
+                const [day, ...rest] = row.split(": ");
+                return (
+                  <div className="hours__row" key={row}>
+                    <strong>{day}</strong>
+                    <span>{rest.join(": ")}</span>
+                  </div>
+                );
+              })}
+              <div className="hours__row">
+                <strong>Arriving by car</strong>
+                <span>
+                  {isPlaceholder(business.parkingNote)
+                    ? "Parking and arrival details are confirmed when you call or WhatsApp."
+                    : business.parkingNote}
+                </span>
               </div>
             </div>
-            <MapArt label={`Gear Go Automobiles · Aya Nagar · serving ${area.name}`} />
-          </div>
-        </div>
-      </section>
-
-      <section className="section compact cream">
-        <div className="container">
-          <div className="section-head-row">
-            <div className="section-head">
-              <span className="eyebrow">What we can help with</span>
-              <h2 className="section-title">Services for {area.name} car owners</h2>
-              <p className="section-lede">
-                A few services {area.name} owners ask about most. Every price is confirmed after
-                inspection, and all car brands are welcome.
-              </p>
-            </div>
-            <div className="section-head-action">
-              <Link className="btn btn-outline btn-sm" href="/services/">
-                All services <Icon name="arrow" size="sm" />
+            <div className="btn-row mt-6">
+              <a
+                className="btn btn--dark"
+                href={business.maps.directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Get directions <Icon name="external" size="sm" />
+              </a>
+              <Link className="btn btn--outline" href="/contact/">
+                Contact &amp; map
               </Link>
             </div>
           </div>
-          <div className="service-grid">
-            {focusServices.map((service, index) => (
-              <ServiceCard service={service} index={index} key={service.slug} showGroup={false} />
+          <MapEmbed title={`Gear Go Automobiles location, serving ${area.name}`} />
+        </div>
+      </section>
+
+      <section className="section section--paper">
+        <div className="wrap">
+          <SectionHead
+            label="What we can help with"
+            title={`Services ${area.name} owners ask about`}
+            lede="A few services that come up most often from this area. Every price is confirmed after inspection, and all car brands are welcome."
+            action={
+              <Link className="btn btn--outline btn--sm" href="/services/">
+                All services <Icon name="arrow" size="sm" />
+              </Link>
+            }
+          />
+          <div className="ledger">
+            {focusServices.map((service) => (
+              <Link className="lrow" href={`/services/${service.slug}/`} key={service.slug}>
+                <span>
+                  <span className="lrow__title">{service.name}</span>
+                  <span className="lrow__text">{service.shortDescription}</span>
+                </span>
+                <span className="lrow__meta">
+                  Inspect &amp; quote <Icon name="arrow" size="sm" />
+                </span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
       <section className="section">
-        <div className="container">
-          <div className="callout callout-wide">
-            <div>
-              <span className="eyebrow">Before you visit</span>
-              <h2>What to expect from a {area.name} enquiry</h2>
-              <p>
-                Send your car make/model, the concern and your locality. We’ll confirm availability and
-                the next step. Once you arrive, we inspect, explain the findings and share the estimate.
-                Paid work begins only after your approval. {business.policies.pricing}
-              </p>
-            </div>
-            <div className="btn-group">
-              <a
-                className="btn btn-lime"
-                href={whatsapp}
-                target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-                rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-              >
-                WhatsApp us <Icon name="whatsapp" size="sm" />
+        <div className="wrap split split--wide">
+          <div>
+            <SectionHead
+              label="Before you visit"
+              title="What to expect from your enquiry"
+              lede="Send your car make and model, the concern and your locality. We will confirm availability and the next step, then inspect the car before any paid work."
+            />
+            <ol className="spec">
+              {[
+                ["Send the car and concern", "WhatsApp, call or the enquiry form. A photo or short video helps."],
+                ["We confirm availability", "You get a direct reply, not an automated booking confirmation."],
+                ["Inspection and estimate", "Findings, options and price are explained at the workshop."],
+                ["Approved work only", "Nothing extra is added without discussing it with you first."],
+              ].map(([title, text], i) => (
+                <li key={title}>
+                  <span className="spec__num">{String(i + 1).padStart(2, "0")}</span>
+                  <span>
+                    <strong>{title}.</strong> {text}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div className="btn-row mt-6">
+              <a className="btn btn--primary" href={whatsapp} {...waAttrs}>
+                <Icon name="whatsapp" size="sm" /> WhatsApp us
               </a>
-              <Link className="btn btn-outline" href="/book/">
+              <Link className="btn btn--outline" href="/book/">
                 Enquiry form
               </Link>
             </div>
+            <p className="note mt-6">
+              <Icon name="info" size="sm" />
+              <span>
+                No payment is taken online and no booking is confirmed automatically. {business.policies.pricing}
+              </span>
+            </p>
           </div>
+          <Figure
+            photo={photos.engineBay}
+            className="photo--3x2 photo--card"
+            sizes="(max-width: 980px) 100vw, 520px"
+          />
         </div>
       </section>
 
       <CtaBand
         title={`Car care for ${area.name}, without the guesswork.`}
-        text="Inspection first, clear estimate, your approval before work. Call or WhatsApp to confirm availability."
+        text="Inspection first, a clear estimate, and your approval before work. Call or WhatsApp to confirm availability."
         actions={
           <>
-            <a
-              className="btn btn-dark"
-              href={whatsapp}
-              target={isExternalUrl(whatsapp) ? "_blank" : undefined}
-              rel={isExternalUrl(whatsapp) ? "noopener noreferrer" : undefined}
-            >
+            <a className="btn btn--dark" href={whatsapp} {...waAttrs}>
               WhatsApp now <Icon name="whatsapp" size="sm" />
             </a>
-            <Link className="btn btn-outline" href="/service-areas/">
+            <Link className="btn btn--outline" href="/service-areas/">
               All service areas
             </Link>
           </>
